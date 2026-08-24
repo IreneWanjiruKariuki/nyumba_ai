@@ -1,0 +1,25 @@
+# Virtual environment
+venv/
+
+# Environment variables - never push this
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# VS Code settings
+.vscode/
+
+# Uploaded files
+uploads/
+
+# ML model files
+*.pkl
+*.joblib
+
+# OS files
+.DS_Store
+Thumbs.db
