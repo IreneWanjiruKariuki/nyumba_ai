@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - NyumbaAI</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+
+<div class="auth-page">
+
+    <!-- Left branding panel -->
+    <div class="auth-panel-left">
+        <div class="brand">Nyumba<span>AI</span></div>
+        <h2>Join NyumbaAI today</h2>
+        <p>
+            One account gives you access to both the
+            property owner tools and the customer
+            browsing experience.
+        </p>
+        <ul class="feature-list">
+            <li>Submit properties and get price predictions</li>
+            <li>List your property after verification</li>
+            <li>Browse listings as a customer</li>
+            <li>Free to register and use</li>
+        </ul>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="auth-panel-right">
+        <div class="auth-form-wrapper">
+
+            <h1 class="auth-title">Create your account</h1>
+            <p class="auth-subtitle">
+                One account for owners and customers
+            </p>
+
+            <div class="alert alert-error"   id="registerError"></div>
+            <div class="alert alert-success" id="registerSuccess"></div>
+
+            <form id="registerForm" novalidate>
+
+                <div class="form-group">
+                    <label for="name">Full name</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Full name"
+                        autocomplete="name"
+                    >
+                    <span class="form-error" id="nameError">
+                        Please enter your full name
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                    >
+                    <span class="form-error" id="emailError">
+                        Please enter a valid email address
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a strong password"
+                        autocomplete="new-password"
+                    >
+                    <span class="form-hint">Minimum 6 characters</span>
+                    <span class="form-error" id="passwordError">
+                        Password must be at least 6 characters
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Repeat your password"
+                        autocomplete="new-password"
+                    >
+                    <span class="form-error" id="confirmPasswordError">
+                        Passwords do not match
+                    </span>
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-full mt-8"
+                    id="registerBtn"
+                >
+                    <span id="registerBtnText">Create account</span>
+                    <span class="spinner" id="registerSpinner"></span>
+                </button>
+
+            </form>
+
+            <div class="auth-footer">
+                Already have an account?
+                <a href="login.html">Login here</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="../js/fetch.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>
