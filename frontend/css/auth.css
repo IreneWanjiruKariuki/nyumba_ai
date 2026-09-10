@@ -1,0 +1,126 @@
+/* AUTH LAYOUT */
+.auth-page {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+/* left panel — branding */
+.auth-panel-left {
+    background: linear-gradient(160deg, #1B4332 0%, #2D6A4F 60%, #40916C 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 56px;
+    color: white;
+}
+
+.auth-panel-left .brand {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 48px;
+    letter-spacing: 0.3px;
+}
+
+.auth-panel-left .brand span {
+    color: #52B788;
+}
+
+.auth-panel-left h2 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 16px;
+    color: white;
+}
+
+.auth-panel-left p {
+    color: rgba(255,255,255,0.72);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 360px;
+}
+
+.auth-panel-left .feature-list {
+    margin-top: 40px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.auth-panel-left .feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+}
+
+.auth-panel-left .feature-list li::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #52B788;
+    flex-shrink: 0;
+}
+
+/* right panel — form */
+.auth-panel-right {
+    background-color: #F8F9F8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 40px;
+}
+
+.auth-form-wrapper {
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-form-wrapper .auth-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1C1C1C;
+    margin-bottom: 6px;
+}
+
+.auth-form-wrapper .auth-subtitle {
+    font-size: 14px;
+    color: #6B7280;
+    margin-bottom: 32px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 13.5px;
+    color: #6B7280;
+}
+
+.auth-footer a {
+    color: #2D6A4F;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+/* RESPONSIVE — stack on mobile */
+@media (max-width: 768px) {
+    .auth-page {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-panel-left {
+        display: none;
+    }
+
+    .auth-panel-right {
+        padding: 40px 24px;
+    }
+}

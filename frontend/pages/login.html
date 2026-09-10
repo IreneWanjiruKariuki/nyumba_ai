@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — NyumbaAI</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+
+<div class="auth-page">
+
+    <!-- Left branding panel -->
+    <div class="auth-panel-left">
+        <div class="brand">Nyumba<span>AI</span></div>
+        <h2>Smarter property pricing for Kenya</h2>
+        <p>
+            Get instant sale and rental price predictions
+            from your property description — powered by
+            machine learning trained on the Kenyan market.
+        </p>
+        <ul class="feature-list">
+            <li>Predict sale and rental prices instantly</li>
+            <li>Administrator-verified property listings</li>
+            <li>Browse verified listings as a customer</li>
+            <li>One account for owners and customers</li>
+        </ul>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="auth-panel-right">
+        <div class="auth-form-wrapper">
+
+            <h1 class="auth-title">Welcome back</h1>
+            <p class="auth-subtitle">
+                Login to access your NyumbaAI account
+            </p>
+
+            <div class="alert alert-error" id="loginError"></div>
+
+            <form id="loginForm" novalidate>
+
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="you@example.com"
+                        autocomplete="email"
+                    >
+                    <span class="form-error" id="emailError">
+                        Please enter a valid email address
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                    >
+                    <span class="form-error" id="passwordError">
+                        Password must be at least 6 characters
+                    </span>
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary btn-full mt-8"
+                    id="loginBtn"
+                >
+                    <span id="loginBtnText">Login</span>
+                    <span class="spinner" id="loginSpinner"></span>
+                </button>
+
+            </form>
+
+            <div class="auth-footer">
+                Don't have an account?
+                <a href="register.html">Create one here</a>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="../js/fetch.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>
