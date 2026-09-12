@@ -35,3 +35,31 @@ def register(data: ClientRegister, db: Session = Depends(get_db)):
     db.refresh(new_client)
 
     return {"message": "Account created successfully"}
+
+# CLIENT LOGIN
+@router.post("/auth/login", response_model=TokenResponse)
+def login(data: ClientLogin, db: Session = Depends(get_db)):
+
+    # Find the client by email
+    client = db.query(Client).filter(Client.email == data.email).first()
+
+    # Verify email and password
+    if not client or not verify_password(data.password, client.passwordHash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password"
+        )
+
+    # Create JWT token with client ID inside
+    token = create_access_token(data={"sub": str(client.clientID)})
+
+    return {
+        "access_token": token,
+        "token_type":   "bearer",
+        "client": {
+            "clientID":  client.clientID,
+            "name":      client.name,
+            "email":     client.email,
+            "createdAt": client.createdAt,
+        }
+    }
