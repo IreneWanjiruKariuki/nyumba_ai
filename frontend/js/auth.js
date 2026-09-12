@@ -111,3 +111,71 @@ if (loginForm) {
         }
     });
 }
+// REGISTER FORM
+const registerForm = document.getElementById('registerForm');
+
+if (registerForm) {
+
+    // Redirect if already logged in
+    if (isLoggedIn()) {
+        redirectTo('home.html');
+    }
+
+    registerForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearAllErrors();
+        hideAlert('registerError');
+        hideAlert('registerSuccess');
+
+        const name            = document.getElementById('name').value.trim();
+        const email           = document.getElementById('email').value.trim();
+        const password        = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        // VALIDATION
+        let valid = true;
+
+        if (!name || name.length < 2) {
+            showError('name', 'nameError');
+            valid = false;
+        }
+
+        if (!email || !isValidEmail(email)) {
+            showError('email', 'emailError');
+            valid = false;
+        }
+
+        if (!password || password.length < 6) {
+            showError('password', 'passwordError');
+            valid = false;
+        }
+
+        if (!confirmPassword || confirmPassword !== password) {
+            showError('confirmPassword', 'confirmPasswordError');
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        // SUBMIT
+        setLoading('registerBtn', 'registerBtnText', 'registerSpinner', true);
+
+        try {
+            await apiFetch('/auth/register', {
+                method: 'POST',
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            showAlert('registerSuccess',
+                'Account created successfully. Redirecting to login...');
+
+            setTimeout(() => redirectTo('login.html'), 2000);
+
+        } catch (error) {
+            showAlert('registerError',
+                error.message || 'Registration failed. Please try again.');
+        } finally {
+            setLoading('registerBtn', 'registerBtnText', 'registerSpinner', false);
+        }
+    });
+}
