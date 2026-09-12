@@ -63,3 +63,32 @@ def login(data: ClientLogin, db: Session = Depends(get_db)):
             "createdAt": client.createdAt,
         }
     }
+
+# ADMIN LOGIN
+@router.post("/admin/login", response_model=AdminTokenResponse)
+def admin_login(data: AdminLogin, db: Session = Depends(get_db)):
+
+    # Find the administrator by email
+    admin = db.query(Administrator).filter(
+        Administrator.email == data.email
+    ).first()
+
+    # Verify email and password
+    if not admin or not verify_password(data.password, admin.passwordHash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect administrator email or password"
+        )
+
+    # Create JWT token with admin ID inside
+    token = create_access_token(data={"sub": str(admin.adminID), "role": "admin"})
+
+    return {
+        "access_token": token,
+        "token_type":   "bearer",
+        "administrator": {
+            "adminID": admin.adminID,
+            "name":    admin.name,
+            "email":   admin.email,
+        }
+    }
