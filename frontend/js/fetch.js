@@ -81,3 +81,20 @@ function getClient() {
 function isLoggedIn() {
     return !!localStorage.getItem('token');
 }
+// ── REDIRECT HELPERS ─────────────────────────────────────────
+function redirectTo(page) {
+    window.location.href = page;
+}
+
+function requireAuth() {
+    if (!isLoggedIn()) {
+        redirectTo('login.html');
+    }
+}
+
+function requireAdminAuth() {
+    const admin = localStorage.getItem('admin');
+    if (!admin) {
+        redirectTo('admin-login.html');
+    }
+}
