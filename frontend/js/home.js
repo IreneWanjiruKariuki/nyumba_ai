@@ -12,3 +12,14 @@ if (client) {
     if (greeting) greeting.textContent = `Welcome back, ${firstName}`;
     if (welcome)  welcome.textContent  = firstName;
 }
+
+// LOGOUT
+const logoutBtn = document.getElementById('logoutBtn');
+
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        removeToken();
+        redirectTo('login.html');
+    });
+}
