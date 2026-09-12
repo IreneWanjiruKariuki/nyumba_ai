@@ -50,3 +50,11 @@ function setLoading(btnId, textId, spinnerId, loading) {
     if (text)    text.style.opacity = loading ? '0.5' : '1';
     if (spinner) spinner.classList.toggle('visible', loading);
 }
+// CLEAR ERRORS ON INPUT
+document.querySelectorAll('.form-group input').forEach(input => {
+    input.addEventListener('input', () => {
+        clearError(input.id, `${input.id}Error`);
+        hideAlert('loginError');
+        hideAlert('registerError');
+    });
+});
