@@ -179,3 +179,52 @@ if (registerForm) {
         }
     });
 }
+// ADMIN LOGIN FORM
+const adminLoginForm = document.getElementById('adminLoginForm');
+
+if (adminLoginForm) {
+
+    adminLoginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearAllErrors();
+        hideAlert('adminLoginError');
+
+        const email    = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        // VALIDATION
+        let valid = true;
+
+        if (!email || !isValidEmail(email)) {
+            showError('email', 'emailError');
+            valid = false;
+        }
+
+        if (!password) {
+            showError('password', 'passwordError');
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        // SUBMIT
+        setLoading('adminLoginBtn', 'adminLoginBtnText', 'adminLoginSpinner', true);
+
+        try {
+            const data = await apiFetch('/admin/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password }),
+            });
+
+            localStorage.setItem('admin', JSON.stringify(data.administrator));
+            localStorage.setItem('adminToken', data.access_token);
+            redirectTo('admin-dashboard.html');
+
+        } catch (error) {
+            showAlert('adminLoginError',
+                error.message || 'Login failed. Invalid administrator credentials.');
+        } finally {
+            setLoading('adminLoginBtn', 'adminLoginBtnText', 'adminLoginSpinner', false);
+        }
+    });
+}
