@@ -29,3 +29,30 @@ async function apiFetch(endpoint, options = {}) {
         throw error;
     }
 }
+// MULTIPART FETCH (for file uploads)
+async function apiFetchForm(endpoint, formData, method = 'POST') {
+    const token = localStorage.getItem('token');
+
+    const headers = {
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+    };
+
+    try {
+        const response = await fetch(`${API_BASE}${endpoint}`, {
+            method,
+            headers,
+            body: formData,
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || 'Something went wrong');
+        }
+
+        return data;
+
+    } catch (error) {
+        throw error;
+    }
+}
