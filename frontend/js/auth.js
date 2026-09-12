@@ -58,3 +58,56 @@ document.querySelectorAll('.form-group input').forEach(input => {
         hideAlert('registerError');
     });
 });
+// LOGIN FORM
+const loginForm = document.getElementById('loginForm');
+
+if (loginForm) {
+
+    // Redirect if already logged in
+    if (isLoggedIn()) {
+        redirectTo('home.html');
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearAllErrors();
+        hideAlert('loginError');
+
+        const email    = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+
+        // VALIDATION
+        let valid = true;
+
+        if (!email || !isValidEmail(email)) {
+            showError('email', 'emailError');
+            valid = false;
+        }
+
+        if (!password || password.length < 6) {
+            showError('password', 'passwordError');
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        // SUBMIT
+        setLoading('loginBtn', 'loginBtnText', 'loginSpinner', true);
+
+        try {
+            const data = await apiFetch('/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password }),
+            });
+
+            saveToken(data.access_token);
+            saveClient(data.client);
+            redirectTo('home.html');
+
+        } catch (error) {
+            showAlert('loginError', error.message || 'Login failed. Please check your credentials.');
+        } finally {
+            setLoading('loginBtn', 'loginBtnText', 'loginSpinner', false);
+        }
+    });
+}
