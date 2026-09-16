@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard — NyumbaAI</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+<div class="dashboard-page">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="home.html" class="navbar-brand">
+            Nyumba<span style="color:#52B788">AI</span>
+        </a>
+        <ul class="navbar-links">
+            <li><span id="welcomeName"></span></li>
+            <li><a href="home.html">Switch role</a></li>
+            <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="dashboard-content">
+
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1>Owner Dashboard</h1>
+                <p>Manage your property submissions and listings</p>
+            </div>
+            <a href="submit-property.html" class="btn btn-primary">
+                + Submit New Property
+            </a>
+        </div>
+
+        <!-- Notification banner -->
+        <div class="notification-banner" id="notificationBanner">
+            <span id="notificationMessage"></span>
+            <button class="close-btn" id="closeNotification">✕</button>
+        </div>
+
+        <!-- Stats row -->
+        <div class="stats-grid">
+            <div class="stat-tile submissions">
+                <span class="stat-value" id="totalSubmissions">—</span>
+                <span class="stat-label">Submissions</span>
+            </div>
+            <div class="stat-tile predictions">
+                <span class="stat-value" id="totalPredictions">—</span>
+                <span class="stat-label">Predictions</span>
+            </div>
+            <div class="stat-tile listings">
+                <span class="stat-value" id="totalListings">—</span>
+                <span class="stat-label">Active Listings</span>
+            </div>
+        </div>
+
+        <!-- Prediction history -->
+        <div class="section-header">
+            <h2>Prediction History</h2>
+        </div>
+
+        <div class="table-wrapper" id="predictionsWrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Location</th>
+                        <th>Sale Price</th>
+                        <th>Rental Price</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="predictionsTableBody">
+                    <tr>
+                        <td colspan="6" style="text-align:center;padding:32px;color:#9CA3AF;">
+                            Loading predictions...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Active listings -->
+        <div class="section-header">
+            <h2>My Active Listings</h2>
+        </div>
+
+        <div id="listingsContainer">
+            <div class="empty-state">
+                <strong>No active listings yet</strong>
+                <p>
+                    After receiving a prediction you can list
+                    your property for sale or rental.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="../js/fetch.js"></script>
+<script src="../js/dashboard.js"></script>
+</body>
+</html>
