@@ -157,3 +157,56 @@ function validateForm() {
 
     return valid;
 }
+
+// FORM SUBMIT
+const submitForm = document.getElementById('submitForm');
+
+if (submitForm) {
+    submitForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!validateForm()) return;
+
+        const description = descField.value.trim();
+        const locationID  = document.getElementById('locationID').value;
+        const activeFiles = selectedFiles.filter(f => f !== null);
+
+        // Build multipart form data
+        const formData = new FormData();
+        formData.append('description', description);
+        formData.append('locationID',  locationID);
+        activeFiles.forEach(file => {
+            formData.append('images', file);
+        });
+
+        // Show loading
+        document.getElementById('submitBtn').disabled      = true;
+        document.getElementById('submitBtnText').style.opacity = '0.5';
+        document.getElementById('submitSpinner')
+            .classList.add('visible');
+
+        try {
+            await apiFetchForm('/submissions', formData);
+
+            document.getElementById('submitSuccess').textContent =
+                'Property submitted successfully! ' +
+                'The administrator will review it shortly.';
+            document.getElementById('submitSuccess')
+                .classList.add('visible');
+
+            // Redirect to dashboard after 2 seconds
+            setTimeout(() => redirectTo('owner-dashboard.html'), 2000);
+
+        } catch (error) {
+            document.getElementById('submitError').textContent =
+                error.message || 'Submission failed. Please try again.';
+            document.getElementById('submitError')
+                .classList.add('visible');
+        } finally {
+            document.getElementById('submitBtn').disabled      = false;
+            document.getElementById('submitBtnText').style.opacity = '1';
+            document.getElementById('submitSpinner')
+                .classList.remove('visible');
+        }
+    });
+}
