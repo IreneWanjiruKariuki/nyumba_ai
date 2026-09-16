@@ -38,3 +38,16 @@ async function loadDashboard() {
         console.error('Dashboard load error:', error);
     }
 }
+
+// RENDER STATS
+function renderStats(submissions) {
+    const total       = submissions.length;
+    const predictions = submissions.filter(s => s.status === 'approved').length;
+    const listings    = submissions.filter(
+        s => s.listing && s.listing.status === 'active'
+    ).length;
+
+    document.getElementById('totalSubmissions').textContent = total;
+    document.getElementById('totalPredictions').textContent = predictions;
+    document.getElementById('totalListings').textContent    = listings;
+}
