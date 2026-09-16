@@ -174,3 +174,26 @@ function renderListings(submissions) {
             `).join('')}
         </div>`;
 }
+
+// LOAD AND SHOW NOTIFICATIONS
+async function loadNotifications() {
+    try {
+        const notifications = await apiFetch('/notifications');
+        if (!notifications || notifications.length === 0) return;
+
+        // Show the most recent notification
+        const latest  = notifications[0];
+        const banner  = document.getElementById('notificationBanner');
+        const message = document.getElementById('notificationMessage');
+
+        if (banner && message) {
+            message.textContent = latest.message;
+            banner.classList.add(
+                'visible',
+                latest.type === 'approval' ? 'approval' : 'rejection'
+            );
+        }
+    } catch (error) {
+        // Notifications are non-critical — fail silently
+    }
+}
