@@ -116,3 +116,61 @@ function renderPredictions(submissions) {
             </tr>`;
     }).join('');
 }
+
+// RENDER LISTINGS
+function renderListings(submissions) {
+    const container = document.getElementById('listingsContainer');
+    const active    = submissions.filter(
+        s => s.listing && s.listing.status === 'active'
+    );
+
+    if (active.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <strong>No active listings yet</strong>
+                <p>
+                    After receiving a prediction you can list
+                    your property for sale or rental.
+                </p>
+            </div>`;
+        return;
+    }
+
+    container.innerHTML = `
+        <div class="listings-grid">
+            ${active.map(sub => `
+                <div class="listing-card">
+                    <div class="listing-thumb">img</div>
+                    <div class="listing-info">
+                        <div class="listing-title">
+                            ${sub.description.substring(0, 55)}...
+                        </div>
+                        <div class="listing-meta">
+                            <span>
+                                ${sub.listing.listingType === 'both'
+                                    ? 'Sale & Rental'
+                                    : sub.listing.listingType}
+                            </span>
+                            <span>
+                                KES ${Number(sub.listing.askingPrice)
+                                    .toLocaleString()}
+                            </span>
+                            <span>
+                                ${sub.location
+                                    ? sub.location.cityOrCounty
+                                    : ''}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="listing-actions">
+                        <button
+                            class="btn btn-sm btn-ghost"
+                            onclick="pullDownListing(${sub.listing.listingID})"
+                        >
+                            Pull Down
+                        </button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>`;
+}
