@@ -16,3 +16,22 @@ if (logoutBtn) {
         redirectTo('login.html');
     });
 }
+
+// LOAD LOCATIONS INTO DROPDOWN 
+async function loadLocations() {
+    try {
+        const locations = await apiFetch('/locations');
+        const select    = document.getElementById('locationID');
+
+        locations.forEach(loc => {
+            const option       = document.createElement('option');
+            option.value       = loc.locationID;
+            option.textContent = loc.cityOrCounty;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Could not load locations:', error);
+    }
+}
+
+loadLocations();
