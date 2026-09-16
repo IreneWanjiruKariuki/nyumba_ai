@@ -35,3 +35,16 @@ async function loadLocations() {
 }
 
 loadLocations();
+
+// CHARACTER COUNTER
+const descField  = document.getElementById('description');
+const charCount  = document.getElementById('charCount');
+
+if (descField) {
+    descField.addEventListener('input', () => {
+        charCount.textContent = descField.value.length;
+        document.getElementById('descriptionError')
+            .classList.remove('visible');
+        descField.classList.remove('error');
+    });
+}
