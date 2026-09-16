@@ -48,3 +48,80 @@ if (descField) {
         descField.classList.remove('error');
     });
 }
+
+// IMAGE UPLOAD AND PREVIEW
+let selectedFiles = [];
+
+const imageInput  = document.getElementById('imageInput');
+const previewGrid = document.getElementById('previewGrid');
+const uploadZone  = document.getElementById('uploadZone');
+
+// Drag and drop
+if (uploadZone) {
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.classList.add('drag-over');
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+        uploadZone.classList.remove('drag-over');
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.classList.remove('drag-over');
+        handleFiles(Array.from(e.dataTransfer.files));
+    });
+}
+
+if (imageInput) {
+    imageInput.addEventListener('change', () => {
+        handleFiles(Array.from(imageInput.files));
+    });
+}
+
+function handleFiles(files) {
+    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+    files.forEach(file => {
+        if (!['image/jpeg', 'image/png'].includes(file.type)) {
+            alert(`${file.name} is not a JPG or PNG file.`);
+            return;
+        }
+        if (file.size > MAX_SIZE) {
+            alert(`${file.name} exceeds the 5MB limit.`);
+            return;
+        }
+        selectedFiles.push(file);
+        addPreview(file, selectedFiles.length - 1);
+    });
+
+    document.getElementById('imageError')
+        .classList.remove('visible');
+}
+
+function addPreview(file, index) {
+    const reader  = new FileReader();
+    reader.onload = (e) => {
+        const div         = document.createElement('div');
+        div.className     = 'preview-item';
+        div.dataset.index = index;
+        div.innerHTML     = `
+            <img src="${e.target.result}" alt="Preview">
+            <button
+                class="remove-btn"
+                type="button"
+                onclick="removePreview(${index})"
+            >✕</button>`;
+        previewGrid.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+}
+
+function removePreview(index) {
+    selectedFiles[index] = null;
+    const item = previewGrid.querySelector(
+        `[data-index="${index}"]`
+    );
+    if (item) item.remove();
+}
