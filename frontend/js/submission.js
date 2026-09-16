@@ -125,3 +125,35 @@ function removePreview(index) {
     );
     if (item) item.remove();
 }
+
+// FORM VALIDATION
+function validateForm() {
+    let valid = true;
+
+    const description = descField ? descField.value.trim() : '';
+    const locationID  = document.getElementById('locationID').value;
+    const activeFiles = selectedFiles.filter(f => f !== null);
+
+    if (!description || description.length < 30) {
+        document.getElementById('descriptionError')
+            .classList.add('visible');
+        if (descField) descField.classList.add('error');
+        valid = false;
+    }
+
+    if (!locationID) {
+        document.getElementById('locationError')
+            .classList.add('visible');
+        document.getElementById('locationID')
+            .classList.add('error');
+        valid = false;
+    }
+
+    if (activeFiles.length === 0) {
+        document.getElementById('imageError')
+            .classList.add('visible');
+        valid = false;
+    }
+
+    return valid;
+}
