@@ -1,0 +1,220 @@
+ .submit-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 36px 24px 60px;
+}
+
+.submit-header {
+    margin-bottom: 28px;
+}
+
+.submit-header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.submit-header p {
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.submit-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 32px 28px;
+    margin-bottom: 20px;
+}
+
+.submit-card h2 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* DESCRIPTION FIELD */
+.form-group textarea {
+    resize: vertical;
+    min-height: 130px;
+}
+
+.char-count {
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+/* IMAGE UPLOAD ZONE */
+.upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-md);
+    padding: 36px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color var(--transition),
+                background-color var(--transition);
+    background-color: #FAFAFA;
+    position: relative;
+}
+
+.upload-zone:hover,
+.upload-zone.drag-over {
+    border-color: var(--primary);
+    background-color: #F0F7F4;
+}
+
+.upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+}
+
+.upload-zone .upload-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.upload-zone .upload-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+}
+
+.upload-zone .upload-hint {
+    font-size: 12.5px;
+    color: var(--text-muted);
+}
+
+/* IMAGE PREVIEWS */
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 16px;
+}
+
+.preview-item {
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    aspect-ratio: 1;
+    background-color: var(--border);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.preview-item .remove-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background-color: rgba(0,0,0,0.55);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color var(--transition);
+}
+
+.preview-item .remove-btn:hover {
+    background-color: var(--danger);
+}
+
+.upload-error {
+    color: var(--danger);
+    font-size: 12.5px;
+    margin-top: 8px;
+    display: none;
+}
+
+.upload-error.visible {
+    display: block;
+}
+
+/* SUBMIT ROW */
+.submit-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.submit-row .back-link {
+    color: var(--text-muted);
+    font-size: 14px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.submit-row .back-link:hover {
+    color: var(--text);
+}
+
+/* PROGRESS STEPS */
+.progress-steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 28px;
+}
+
+.step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.step .step-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background-color: var(--border);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.step.active .step-num {
+    background-color: var(--primary);
+    color: white;
+}
+
+.step.active {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.step-line {
+    flex: 1;
+    height: 1px;
+    background-color: var(--border);
+    margin: 0 10px;
+    min-width: 30px;
+}
