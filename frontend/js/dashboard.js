@@ -197,3 +197,16 @@ async function loadNotifications() {
         // Notifications are non-critical — fail silently
     }
 }
+
+// PULL DOWN LISTING
+async function pullDownListing(listingID) {
+    if (!confirm('Are you sure you want to pull down this listing?')) return;
+    try {
+        await apiFetch(`/listing/${listingID}/pulldown`, { method: 'PUT' });
+        loadDashboard();
+    } catch (error) {
+        alert('Could not pull down listing. Please try again.');
+    }
+}
+
+loadDashboard();
