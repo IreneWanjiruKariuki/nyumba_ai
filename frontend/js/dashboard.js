@@ -16,3 +16,25 @@ if (logoutBtn) {
         redirectTo('login.html');
     });
 }
+
+// CLOSE NOTIFICATION BANNER
+const closeNotif = document.getElementById('closeNotification');
+if (closeNotif) {
+    closeNotif.addEventListener('click', () => {
+        document.getElementById('notificationBanner')
+            .classList.remove('visible', 'approval', 'rejection');
+    });
+}
+
+// LOAD DASHBOARD DATA
+async function loadDashboard() {
+    try {
+        const submissions = await apiFetch('/submissions');
+        renderStats(submissions);
+        renderPredictions(submissions);
+        renderListings(submissions);
+        await loadNotifications();
+    } catch (error) {
+        console.error('Dashboard load error:', error);
+    }
+}
