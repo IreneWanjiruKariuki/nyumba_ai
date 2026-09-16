@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Property — NyumbaAI</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/subprop.css">
+</head>
+<body>
+
+<div class="dashboard-page">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="home.html" class="navbar-brand">
+            Nyumba<span style="color:#52B788">AI</span>
+        </a>
+        <ul class="navbar-links">
+            <li><span id="welcomeName"></span></li>
+            <li><a href="owner-dashboard.html">Dashboard</a></li>
+            <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="submit-content">
+
+        <!-- Header -->
+        <div class="submit-header">
+            <h1>Submit Your Property</h1>
+            <p>
+                Describe your property to receive a sale
+                and rental price prediction
+            </p>
+        </div>
+
+        <!-- Progress steps -->
+        <div class="progress-steps">
+            <div class="step active">
+                <span class="step-num">1</span>
+                <span>Describe property</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <span class="step-num">2</span>
+                <span>Admin review</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <span class="step-num">3</span>
+                <span>Get prediction</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step">
+                <span class="step-num">4</span>
+                <span>List property</span>
+            </div>
+        </div>
+
+        <!-- Alert -->
+        <div class="alert alert-error"   id="submitError"></div>
+        <div class="alert alert-success" id="submitSuccess"></div>
+
+        <form id="submitForm" novalidate>
+
+            <!-- Description card -->
+            <div class="submit-card">
+                <h2>Property Description</h2>
+
+                <div class="form-group">
+                    <label for="description">
+                        Describe your property  *
+                    </label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        placeholder="e.g. Three-bedroom maisonette in Kilimani with a DSQ, borehole, en-suite master bedroom and secure parking. The property has a well-maintained garden and is in excellent condition..."
+                        maxlength="1000"
+                    ></textarea>
+                    <div class="char-count">
+                        <span id="charCount">0</span> / 1000 characters
+                    </div>
+                    <span class="form-error" id="descriptionError">
+                        Please enter a property description
+                        (minimum 30 characters)
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="locationID">
+                        Nairobi neighbourhood  *
+                    </label>
+                    <select id="locationID" name="locationID">
+                        <option value="">
+                            Select neighbourhood...
+                        </option>
+                    </select>
+                    <span class="form-error" id="locationError">
+                        Please select a neighbourhood
+                    </span>
+                </div>
+
+            </div>
+
+            <!-- Images card -->
+            <div class="submit-card">
+                <h2>Property Images</h2>
+
+                <div
+                    class="upload-zone"
+                    id="uploadZone"
+                >
+                    <input
+                        type="file"
+                        id="imageInput"
+                        accept="image/jpeg,image/png"
+                        multiple
+                    >
+                    <div class="upload-icon">📷</div>
+                    <div class="upload-title">
+                        Drag and drop or click to upload
+                    </div>
+                    <div class="upload-hint">
+                        JPG or PNG  ·  Max 5MB per image
+                        ·  At least 1 image required
+                    </div>
+                </div>
+
+                <span class="upload-error" id="imageError">
+                    Please upload at least one image
+                </span>
+
+                <div class="preview-grid" id="previewGrid"></div>
+
+            </div>
+
+            <!-- Submit row -->
+            <div class="submit-row">
+                <a href="owner-dashboard.html" class="back-link">
+                    ← Back to dashboard
+                </a>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    id="submitBtn"
+                    style="padding: 12px 32px;"
+                >
+                    <span id="submitBtnText">
+                        Submit for Review
+                    </span>
+                    <span
+                        class="spinner"
+                        id="submitSpinner"
+                    ></span>
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="../js/fetch.js"></script>
+<script src="../js/submission.js"></script>
+</body>
+</html>
