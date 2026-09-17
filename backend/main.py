@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 from backend.database import engine, Base, get_db
@@ -6,7 +7,7 @@ from backend.models import (
     Client, Administrator, Location, Submission,
     Image, Prediction, Listing, Notification
 )
-from backend.routes import auth
+from backend.routes import auth, submission
 from fastapi.middleware.cors import CORSMiddleware
 
 # Create the FastAPI app
@@ -26,6 +27,7 @@ Base.metadata.create_all(bind=engine)
 
 # Include routers
 app.include_router(auth.router)
+app.include_router(submission.router)
 
 # Root endpoint
 @app.get("/")
