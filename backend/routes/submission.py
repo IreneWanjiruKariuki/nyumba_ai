@@ -37,14 +37,14 @@ async def create_submission(
     db:          Session    = Depends(get_db),
     current_client: Client  = Depends(get_current_client),
 ):
-    # ── Validate description ──────────────────────────────────
+    # Validate description
     if not description or len(description.strip()) < 30:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="Description must be at least 30 characters"
         )
 
-    # ── Validate location ─────────────────────────────────────
+    # Validate location
     location = db.query(Location).filter(
         Location.locationID == locationID
     ).first()
@@ -55,7 +55,7 @@ async def create_submission(
             detail="Location not found"
         )
 
-    # ── Validate images ───────────────────────────────────────
+    # Validate images
     if not images or len(images) == 0:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -70,7 +70,7 @@ async def create_submission(
                 detail=error
             )
 
-    # ── Create submission record ──────────────────────────────
+    # Create submission record
     new_submission = Submission(
         clientID    = current_client.clientID,
         locationID  = locationID,
@@ -81,7 +81,7 @@ async def create_submission(
     db.commit()
     db.refresh(new_submission)
 
-    # ── Save images and create Image records ──────────────────
+    # Save images and create Image records
     for image in images:
         try:
             file_path = await save_image(image)
@@ -106,3 +106,15 @@ async def create_submission(
         "submissionID": new_submission.submissionID,
         "status":       "pending",
     }
+
+# Get all submissions for the current client
+@router.get("/submissions", response_model=List[SubmissionResponse])
+def get_submissions(
+    db:             Session = Depends(get_db),
+    current_client: Client  = Depends(get_current_client),
+):
+    submissions = db.query(Submission).filter(
+        Submission.clientID == current_client.clientID
+    ).order_by(Submission.submittedAt.desc()).all()
+
+    return submissions
