@@ -81,7 +81,7 @@ function getClient() {
 function isLoggedIn() {
     return !!localStorage.getItem('token');
 }
-// ── REDIRECT HELPERS ─────────────────────────────────────────
+// REDIRECT HELPERS
 function redirectTo(page) {
     window.location.href = page;
 }

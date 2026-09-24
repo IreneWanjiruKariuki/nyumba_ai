@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend.models.client import Client
@@ -51,6 +52,34 @@ def login(data: ClientLogin, db: Session = Depends(get_db)):
         )
 
     # Create JWT token with client ID inside
+    token = create_access_token(data={"sub": str(client.clientID)})
+
+    return {
+        "access_token": token,
+        "token_type":   "bearer",
+        "client": {
+            "clientID":  client.clientID,
+            "name":      client.name,
+            "email":     client.email,
+            "createdAt": client.createdAt,
+        }
+    }
+
+# SWAGGER "AUTHORIZE" LOGIN (OAuth2 password flow, username/password form fields)
+@router.post("/auth/token", response_model=TokenResponse, include_in_schema=False)
+def login_for_swagger(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
+    client = db.query(Client).filter(Client.email == form_data.username).first()
+
+    if not client or not verify_password(form_data.password, client.passwordHash):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
     token = create_access_token(data={"sub": str(client.clientID)})
 
     return {

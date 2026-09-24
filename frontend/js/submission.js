@@ -1,9 +1,110 @@
+window.addEventListener('beforeunload', function(e) {
+    console.log('Page is about to unload');
+});
 // PROTECT PAGE
 requireAuth();
 
+// FORM SUBMIT
+// Registered first, before anything else below has a chance to throw,
+// so a later error can never leave the button without a handler and
+// fall back to a native (page-reloading) form submission.
+const submitForm = document.getElementById('submitForm');
+
+if (submitForm) {
+    submitForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!validateForm()) return;
+
+        const description = descField.value.trim();
+        const locationID  = document.getElementById('locationID').value;
+        const activeFiles = selectedFiles.filter(f => f !== null);
+
+        // Build multipart form data
+        const formData = new FormData();
+        formData.append('description', description);
+        formData.append('locationID',  locationID);
+        activeFiles.forEach(file => {
+            formData.append('images', file);
+        });
+
+        // Show loading
+        document.getElementById('submitBtn').disabled      = true;
+        document.getElementById('submitBtnText').style.opacity = '0.5';
+        document.getElementById('submitSpinner')
+            .classList.add('visible');
+
+        try {
+            console.log('Sending submission to backend...');
+
+            const result = await apiFetchForm('/submissions', formData);
+
+            console.log('Backend response:', result);
+            console.log('About to show success message...');
+
+            const successEl = document.getElementById('submitSuccess');
+            console.log('Success element found:', successEl);
+
+            if (successEl) {
+                successEl.textContent =
+                    'Property submitted successfully! ' +
+                    'The administrator will review it shortly. ' +
+                    'Redirecting to dashboard...';
+                successEl.style.display      = 'block';
+                successEl.style.padding      = '12px 16px';
+                successEl.style.backgroundColor = '#DCFCE7';
+                successEl.style.color        = '#166534';
+                successEl.style.borderLeft   = '4px solid #52B788';
+                successEl.style.borderRadius = '6px';
+                successEl.style.marginBottom = '16px';
+                successEl.style.fontSize     = '13.5px';
+                successEl.style.fontWeight   = '500';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            console.log('Success message shown. Redirecting in 2.5 seconds...');
+
+            setTimeout(function() {
+                window.location.href = 'owner-dashboard.html';
+            }, 2500);
+
+        } catch (error) {
+            console.log('Error caught:', error);
+            console.log('Error message:', error.message);
+
+            const errorEl = document.getElementById('submitError');
+            if (errorEl) {
+                errorEl.textContent =
+                    error.message || 'Submission failed. Please try again.';
+                errorEl.style.display        = 'block';
+                errorEl.style.padding        = '12px 16px';
+                errorEl.style.backgroundColor = '#FEE2E2';
+                errorEl.style.color          = '#B91C1C';
+                errorEl.style.borderLeft     = '4px solid #B91C1C';
+                errorEl.style.borderRadius   = '6px';
+                errorEl.style.marginBottom   = '16px';
+                errorEl.style.fontSize       = '13.5px';
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        } finally {
+            const btn     = document.getElementById('submitBtn');
+            const btnText = document.getElementById('submitBtnText');
+            const spinner = document.getElementById('submitSpinner');
+
+            if (btn)     btn.disabled          = false;
+            if (btnText) btnText.style.opacity = '1';
+            if (spinner) spinner.classList.remove('visible');
+        }
+    });
+}
+
 // POPULATE NAVBAR
 const client    = getClient();
-const firstName = client ? client.name.split(' ')[0] : '';
+const firstName = client && client.name ? client.name.split(' ')[0] : '';
 const welcomeEl = document.getElementById('welcomeName');
 if (welcomeEl) welcomeEl.textContent = firstName;
 
@@ -156,57 +257,4 @@ function validateForm() {
     }
 
     return valid;
-}
-
-// FORM SUBMIT
-const submitForm = document.getElementById('submitForm');
-
-if (submitForm) {
-    submitForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        if (!validateForm()) return;
-
-        const description = descField.value.trim();
-        const locationID  = document.getElementById('locationID').value;
-        const activeFiles = selectedFiles.filter(f => f !== null);
-
-        // Build multipart form data
-        const formData = new FormData();
-        formData.append('description', description);
-        formData.append('locationID',  locationID);
-        activeFiles.forEach(file => {
-            formData.append('images', file);
-        });
-
-        // Show loading
-        document.getElementById('submitBtn').disabled      = true;
-        document.getElementById('submitBtnText').style.opacity = '0.5';
-        document.getElementById('submitSpinner')
-            .classList.add('visible');
-
-        try {
-            await apiFetchForm('/submissions', formData);
-
-            document.getElementById('submitSuccess').textContent =
-                'Property submitted successfully! ' +
-                'The administrator will review it shortly.';
-            document.getElementById('submitSuccess')
-                .classList.add('visible');
-
-            // Redirect to dashboard after 2 seconds
-            setTimeout(() => redirectTo('owner-dashboard.html'), 2000);
-
-        } catch (error) {
-            document.getElementById('submitError').textContent =
-                error.message || 'Submission failed. Please try again.';
-            document.getElementById('submitError')
-                .classList.add('visible');
-        } finally {
-            document.getElementById('submitBtn').disabled      = false;
-            document.getElementById('submitBtnText').style.opacity = '1';
-            document.getElementById('submitSpinner')
-                .classList.remove('visible');
-        }
-    });
 }
