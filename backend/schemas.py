@@ -100,3 +100,15 @@ class SubmissionResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# NOTIFICATION RESPONSE SCHEMA
+class NotificationResponse(BaseModel):
+    notificationID: int
+    clientID:       int
+    submissionID:   int
+    type:           str
+    message:        str
+    sentAt:         datetime
+
+    class Config:
+        from_attributes = True
