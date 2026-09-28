@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — NyumbaAI</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+<div class="admin-page">
+
+    <!-- Admin Navbar -->
+    <nav class="admin-navbar">
+        <a href="admin-dashboard.html" class="admin-navbar-brand">
+            NyumbaAI
+            <span class="admin-badge">Admin</span>
+        </a>
+        <ul class="admin-navbar-links">
+            <li><span id="adminWelcome"></span></li>
+            <li><a href="#" id="adminLogoutBtn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="admin-layout">
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-section">
+                <div class="admin-sidebar-label">Main</div>
+                <a href="admin-dashboard.html"
+                   class="admin-sidebar-link active">
+                    <span class="link-icon">📋</span>
+                    Dashboard
+                </a>
+            </div>
+            <div class="admin-sidebar-section">
+                <div class="admin-sidebar-label">Submissions</div>
+                <a href="admin-dashboard.html"
+                   class="admin-sidebar-link">
+                    <span class="link-icon">⏳</span>
+                    Pending
+                    <span
+                        class="badge badge-warning"
+                        id="sidebarPendingCount"
+                        style="margin-left:auto"
+                    ></span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="admin-main">
+
+            <!-- Page header -->
+            <div class="admin-page-header">
+                <h1>Dashboard</h1>
+                <p>Review and manage property submissions</p>
+            </div>
+
+            <!-- Stat cards -->
+            <div class="stat-grid">
+                <div class="stat-card pending">
+                    <span class="stat-value" id="statPending">—</span>
+                    <span class="stat-label">Pending Review</span>
+                </div>
+                <div class="stat-card approved">
+                    <span class="stat-value" id="statApproved">—</span>
+                    <span class="stat-label">Approved</span>
+                </div>
+                <div class="stat-card rejected">
+                    <span class="stat-value" id="statRejected">—</span>
+                    <span class="stat-label">Rejected</span>
+                </div>
+            </div>
+
+            <!-- Alert -->
+            <div class="alert alert-success" id="dashboardSuccess"></div>
+            <div class="alert alert-error"   id="dashboardError"></div>
+
+            <!-- Pending submissions table -->
+            <div class="admin-table-wrapper">
+                <div class="admin-table-header">
+                    <h2>Pending Submissions</h2>
+                    <span
+                        class="text-muted"
+                        id="pendingCount"
+                        style="font-size:13px"
+                    ></span>
+                </div>
+
+                <table class="admin-table" id="pendingTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Owner</th>
+                            <th>Description</th>
+                            <th>Location</th>
+                            <th>Images</th>
+                            <th>Submitted</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingTableBody">
+                        <tr>
+                            <td colspan="7"
+                                style="text-align:center;
+                                       padding:32px;
+                                       color:#9CA3AF;">
+                                Loading submissions...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script src="../js/fetch.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>
