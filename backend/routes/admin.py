@@ -132,3 +132,66 @@ def approve_submission(
         "submissionID": submission.submissionID,
         "status":       "approved",
     }
+
+# REJECT SUBMISSION
+@router.put("/admin/submissions/{submissionID}/reject")
+def reject_submission(
+    submissionID:  int,
+    data:          RejectSubmission,
+    db:            Session       = Depends(get_db),
+    current_admin: Administrator = Depends(get_current_admin),
+):
+    """
+    Reject a submission with a reason.
+    Updates status to rejected, stores the rejection reason,
+    and sends a rejection notification to the owner.
+    """
+    submission = db.query(Submission).options(
+        joinedload(Submission.client),
+        joinedload(Submission.location),
+    ).filter(
+        Submission.submissionID == submissionID
+    ).first()
+
+    if not submission:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Submission not found"
+        )
+
+    if submission.status != "pending":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Submission is already {submission.status}"
+        )
+
+    if not data.reason or len(data.reason.strip()) < 5:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Rejection reason must be at least 5 characters"
+        )
+
+    # Update submission status
+    submission.status          = "rejected"
+    submission.adminID         = current_admin.adminID
+    submission.rejectionReason = data.reason.strip()
+    db.commit()
+
+    # Send rejection notification to owner
+    create_notification(
+        db           = db,
+        clientID     = submission.clientID,
+        submissionID = submission.submissionID,
+        type         = "rejection",
+        message      = (
+            f"Your submission has been rejected. "
+            f"Reason: {data.reason.strip()}. "
+            f"Please correct the issues and resubmit."
+        )
+    )
+
+    return {
+        "message":      "Submission rejected successfully",
+        "submissionID": submission.submissionID,
+        "status":       "rejected",
+    }
