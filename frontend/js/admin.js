@@ -152,3 +152,210 @@ function renderPendingTable(submissions) {
 if (pendingTableBody) {
     loadAdminDashboard();
 }
+
+// ADMIN REVIEW PAGE
+const reviewContent = document.getElementById('reviewContent');
+const loadingState  = document.getElementById('loadingState');
+
+if (reviewContent) {
+
+    // Get submission ID from URL
+    const params       = new URLSearchParams(window.location.search);
+    const submissionID = params.get('id');
+
+    if (!submissionID) {
+        window.location.href = 'admin-dashboard.html';
+    }
+
+    // Load submission details
+    async function loadSubmission() {
+        try {
+            const sub = await adminFetch(
+                `/admin/submissions/${submissionID}`
+            );
+
+            // Hide loading, show content
+            if (loadingState)  loadingState.style.display  = 'none';
+            if (reviewContent) reviewContent.style.display = 'block';
+
+            // Populate description
+            document.getElementById('reviewTitle').textContent =
+                `Review Submission #${sub.submissionID}`;
+            document.getElementById('reviewDescription').textContent =
+                sub.description;
+            document.getElementById('reviewLocation').textContent =
+                sub.location ? sub.location.cityOrCounty : '—';
+            document.getElementById('reviewOwner').textContent =
+                sub.client ? sub.client.name : '—';
+            document.getElementById('reviewDate').textContent =
+                new Date(sub.submittedAt).toLocaleString('en-KE');
+            document.getElementById('reviewImageCount').textContent =
+                `${sub.images ? sub.images.length : 0} image(s)`;
+
+            // Populate image gallery
+            const gallery = document.getElementById('imageGallery');
+            if (gallery) {
+                if (!sub.images || sub.images.length === 0) {
+                    gallery.innerHTML = `
+                        <div class="gallery-item no-image">
+                            No images uploaded
+                        </div>`;
+                } else {
+                    gallery.innerHTML = sub.images.map(img => `
+                        <div class="gallery-item">
+                            <img
+                                src="http://127.0.0.1:8000/uploads/${
+                                    img.filePath.replace(
+                                        'uploads/submissions/', ''
+                                    )
+                                }"
+                                alt="Property image"
+                                onerror="this.parentElement.innerHTML=
+                                    '<div class=\'no-image\'>Image unavailable</div>'"
+                            >
+                        </div>
+                    `).join('');
+                }
+            }
+
+        } catch (error) {
+            if (loadingState) {
+                loadingState.textContent =
+                    'Could not load submission. ' + error.message;
+            }
+        }
+    }
+
+    loadSubmission();
+
+    // APPROVE BUTTON
+    const approveBtn = document.getElementById('approveBtn');
+    if (approveBtn) {
+        approveBtn.addEventListener('click', async () => {
+            const checks = [
+                document.getElementById('check1'),
+                document.getElementById('check2'),
+                document.getElementById('check3'),
+            ];
+
+            const allChecked = checks.every(c => c && c.checked);
+            if (!allChecked) {
+                alert(
+                    'Please complete all checklist items ' +
+                    'before approving.'
+                );
+                return;
+            }
+
+            if (!confirm(
+                'Are you sure you want to approve this submission? ' +
+                'This will trigger the price prediction pipeline.'
+            )) return;
+
+            approveBtn.disabled    = true;
+            approveBtn.textContent = 'Approving...';
+
+            try {
+                await adminFetch(
+                    `/admin/submissions/${submissionID}/approve`,
+                    { method: 'PUT' }
+                );
+
+                const successEl =
+                    document.getElementById('reviewSuccess');
+                if (successEl) {
+                    successEl.textContent =
+                        'Submission approved successfully. ' +
+                        'Price prediction has been triggered. ' +
+                        'Redirecting to dashboard...';
+                    successEl.classList.add('visible');
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 2500);
+
+            } catch (error) {
+                const errorEl =
+                    document.getElementById('reviewError');
+                if (errorEl) {
+                    errorEl.textContent =
+                        error.message || 'Approval failed.';
+                    errorEl.classList.add('visible');
+                }
+                approveBtn.disabled    = false;
+                approveBtn.textContent = '✓ Approve Submission';
+            }
+        });
+    }
+
+    // REJECT BUTTON
+    const rejectBtn = document.getElementById('rejectBtn');
+    if (rejectBtn) {
+        rejectBtn.addEventListener('click', () => {
+            const section =
+                document.getElementById('rejectionSection');
+            if (section) section.classList.toggle('visible');
+        });
+    }
+
+    // CONFIRM REJECT BUTTON
+    const confirmRejectBtn =
+        document.getElementById('confirmRejectBtn');
+    if (confirmRejectBtn) {
+        confirmRejectBtn.addEventListener('click', async () => {
+            const reason = document.getElementById(
+                'rejectionReason'
+            ).value.trim();
+
+            if (!reason) {
+                alert('Please enter a rejection reason.');
+                return;
+            }
+
+            if (!confirm(
+                'Are you sure you want to reject this submission?'
+            )) return;
+
+            confirmRejectBtn.disabled    = true;
+            confirmRejectBtn.textContent = 'Rejecting...';
+
+            try {
+                await adminFetch(
+                    `/admin/submissions/${submissionID}/reject`,
+                    {
+                        method: 'PUT',
+                        body:   JSON.stringify({ reason }),
+                    }
+                );
+
+                const successEl =
+                    document.getElementById('reviewSuccess');
+                if (successEl) {
+                    successEl.textContent =
+                        'Submission rejected. ' +
+                        'The owner has been notified. ' +
+                        'Redirecting to dashboard...';
+                    successEl.classList.add('visible');
+                }
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 2500);
+
+            } catch (error) {
+                const errorEl =
+                    document.getElementById('reviewError');
+                if (errorEl) {
+                    errorEl.textContent =
+                        error.message || 'Rejection failed.';
+                    errorEl.classList.add('visible');
+                }
+                confirmRejectBtn.disabled    = false;
+                confirmRejectBtn.textContent = 'Confirm Rejection';
+            }
+        });
+    }
+}
