@@ -112,3 +112,29 @@ class NotificationResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# ADMIN SCHEMAS
+class ClientInSubmission(BaseModel):
+    clientID: int
+    name:     str
+    email:    str
+
+    class Config:
+        from_attributes = True
+
+class AdminSubmissionResponse(BaseModel):
+    submissionID:    int
+    description:     str
+    status:          str
+    rejectionReason: Optional[str]
+    submittedAt:     datetime
+    client:          Optional[ClientInSubmission]
+    location:        Optional[LocationResponse]
+    images:          list[ImageResponse]
+    prediction:      Optional[PredictionResponse]
+
+    class Config:
+        from_attributes = True
+
+class RejectSubmission(BaseModel):
+    reason: str
