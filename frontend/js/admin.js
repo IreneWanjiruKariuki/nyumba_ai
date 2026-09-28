@@ -111,42 +111,43 @@ function renderPendingTable(submissions) {
         return;
     }
 
-    pendingTableBody.innerHTML = pending.map(sub => `
-        <tr>
-            <td style="color:var(--text-muted);font-size:13px">
-                #${sub.submissionID}
-            </td>
-            <td style="font-weight:600">
-                ${sub.client ? sub.client.name : '—'}
-            </td>
-            <td style="max-width:220px;
-                       white-space:nowrap;
-                       overflow:hidden;
-                       text-overflow:ellipsis;
-                       color:var(--text-muted);
-                       font-size:13px">
-                ${sub.description}
-            </td>
-            <td style="font-size:13px">
-                ${sub.location ? sub.location.cityOrCounty : '—'}
-            </td>
-            <td style="font-size:13px;color:var(--text-muted)">
-                ${sub.images ? sub.images.length : 0} image(s)
-            </td>
-            <td style="font-size:12px;color:var(--text-muted)">
-                ${new Date(sub.submittedAt)
-                    .toLocaleDateString('en-KE')}
-            </td>
-            <td>
-                
-                    href="admin-review.html?id=${sub.submissionID}"
-                    class="btn btn-sm btn-primary"
-                >
-                    Review
-                </a>
-            </td>
-        </tr>
-    `).join('');
+    let rows = '';
+
+    pending.forEach(sub => {
+        const date = new Date(sub.submittedAt)
+            .toLocaleDateString('en-KE');
+        const desc = sub.description.length > 60
+            ? sub.description.substring(0, 60) + '...'
+            : sub.description;
+        const location = sub.location
+            ? sub.location.cityOrCounty : '—';
+        const client = sub.client
+            ? sub.client.name : '—';
+        const imageCount = sub.images
+            ? sub.images.length : 0;
+
+        rows += '<tr>';
+        rows += '<td style="color:#9CA3AF;font-size:13px">#'
+            + sub.submissionID + '</td>';
+        rows += '<td style="font-weight:600">'
+            + client + '</td>';
+        rows += '<td style="max-width:220px;white-space:nowrap;'
+            + 'overflow:hidden;text-overflow:ellipsis;'
+            + 'color:#6B7280;font-size:13px">'
+            + desc + '</td>';
+        rows += '<td style="font-size:13px">'
+            + location + '</td>';
+        rows += '<td style="font-size:13px;color:#6B7280">'
+            + imageCount + ' image(s)</td>';
+        rows += '<td style="font-size:12px;color:#6B7280">'
+            + date + '</td>';
+        rows += '<td><a href="admin-review.html?id='
+            + sub.submissionID
+            + '" class="btn btn-sm btn-primary">Review</a></td>';
+        rows += '</tr>';
+    });
+
+    pendingTableBody.innerHTML = rows;
 }
 
 if (pendingTableBody) {
