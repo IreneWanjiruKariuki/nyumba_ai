@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Submission — NyumbaAI Admin</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/adminrev.css">
+</head>
+<body>
+
+<div class="admin-page">
+
+    <!-- Admin Navbar -->
+    <nav class="admin-navbar">
+        <a href="admin-dashboard.html" class="admin-navbar-brand">
+            NyumbaAI
+            <span class="admin-badge">Admin</span>
+        </a>
+        <ul class="admin-navbar-links">
+            <li>
+                <a href="admin-dashboard.html">← Back to Dashboard</a>
+            </li>
+            <li><a href="#" id="adminLogoutBtn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="admin-layout">
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-section">
+                <div class="admin-sidebar-label">Main</div>
+                <a href="admin-dashboard.html"
+                   class="admin-sidebar-link">
+                    <span class="link-icon">📋</span>
+                    Dashboard
+                </a>
+            </div>
+            <div class="admin-sidebar-section">
+                <div class="admin-sidebar-label">Submissions</div>
+                <a href="admin-dashboard.html"
+                   class="admin-sidebar-link active">
+                    <span class="link-icon">🔍</span>
+                    Review Submission
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="admin-main">
+
+            <!-- Page header -->
+            <div class="admin-page-header">
+                <h1 id="reviewTitle">Review Submission</h1>
+                <p id="reviewSubtitle">
+                    Verify that the images match the description
+                </p>
+            </div>
+
+            <!-- Alert -->
+            <div class="alert alert-success" id="reviewSuccess"></div>
+            <div class="alert alert-error"   id="reviewError"></div>
+
+            <!-- Loading state -->
+            <div id="loadingState"
+                 style="text-align:center;padding:48px;color:#9CA3AF;">
+                Loading submission...
+            </div>
+
+            <!-- Review content -->
+            <div id="reviewContent" style="display:none">
+
+                <!-- Two column layout -->
+                <div class="review-grid">
+
+                    <!-- Left: Description -->
+                    <div class="review-card">
+                        <h2>Property Description</h2>
+                        <p
+                            class="review-description"
+                            id="reviewDescription"
+                        ></p>
+                        <div class="review-meta">
+                            <div class="review-meta-item">
+                                <span class="meta-label">Location</span>
+                                <span
+                                    class="meta-value"
+                                    id="reviewLocation"
+                                ></span>
+                            </div>
+                            <div class="review-meta-item">
+                                <span class="meta-label">Owner</span>
+                                <span
+                                    class="meta-value"
+                                    id="reviewOwner"
+                                ></span>
+                            </div>
+                            <div class="review-meta-item">
+                                <span class="meta-label">Submitted</span>
+                                <span
+                                    class="meta-value"
+                                    id="reviewDate"
+                                ></span>
+                            </div>
+                            <div class="review-meta-item">
+                                <span class="meta-label">Images</span>
+                                <span
+                                    class="meta-value"
+                                    id="reviewImageCount"
+                                ></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Images -->
+                    <div class="review-card">
+                        <h2>Submitted Images</h2>
+                        <div
+                            class="image-gallery"
+                            id="imageGallery"
+                        ></div>
+                    </div>
+
+                </div>
+
+                <!-- Decision card -->
+                <div class="review-card">
+                    <h2>Verification Decision</h2>
+
+                    <div class="checklist">
+                        <label class="checklist-item">
+                            <input
+                                type="checkbox"
+                                id="check1"
+                            >
+                            <span>
+                                The images clearly show a residential property
+                            </span>
+                        </label>
+                        <label class="checklist-item">
+                            <input
+                                type="checkbox"
+                                id="check2"
+                            >
+                            <span>
+                                The images are consistent with the
+                                submitted description
+                            </span>
+                        </label>
+                        <label class="checklist-item">
+                            <input
+                                type="checkbox"
+                                id="check3"
+                            >
+                            <span>
+                                The location matches the property shown
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="action-row">
+                        <button
+                            class="btn-approve"
+                            id="approveBtn"
+                        >
+                            ✓ Approve Submission
+                        </button>
+                        <button
+                            class="btn-reject"
+                            id="rejectBtn"
+                        >
+                            ✕ Reject Submission
+                        </button>
+                    </div>
+
+                    <!-- Rejection reason -->
+                    <div
+                        class="rejection-section"
+                        id="rejectionSection"
+                    >
+                        <label for="rejectionReason">
+                            Rejection reason (required)
+                        </label>
+                        <textarea
+                            id="rejectionReason"
+                            placeholder="Explain why this submission is being rejected..."
+                        ></textarea>
+                        <button
+                            class="btn-danger btn mt-16"
+                            id="confirmRejectBtn"
+                            style="width:100%"
+                        >
+                            Confirm Rejection
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+</div>
+
+<script src="../js/fetch.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>
