@@ -2,6 +2,8 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from sqlalchemy import text
+from fastapi.staticfiles import StaticFiles
+import os
 from backend.database import engine, Base, get_db
 from backend.models import (
     Client, Administrator, Location, Submission,
@@ -19,6 +21,14 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+)
+
+# SERVE UPLOADED IMAGES
+os.makedirs("uploads/submissions", exist_ok=True)
+app.mount(
+    "/uploads",
+    StaticFiles(directory="uploads"),
+    name="uploads"
 )
 
 # Create all tables in the database on startup
