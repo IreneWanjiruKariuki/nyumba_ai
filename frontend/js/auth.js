@@ -215,10 +215,10 @@ if (adminLoginForm) {
                 method: 'POST',
                 body: JSON.stringify({ email, password }),
             });
-
+             
             localStorage.setItem('admin', JSON.stringify(data.administrator));
             localStorage.setItem('adminToken', data.access_token);
-            redirectTo('admin-dashboard.html');
+            window.location.replace('admin-dashboard.html');
 
         } catch (error) {
             showAlert('adminLoginError',

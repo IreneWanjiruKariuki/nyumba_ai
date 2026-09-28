@@ -1,12 +1,12 @@
 // ADMIN AUTH GUARD
-function requireAdminAuth() {
+const isLoginPage = window.location.pathname.includes('admin-login');
+
+if (!isLoginPage) {
     const admin = localStorage.getItem('admin');
     if (!admin) {
         window.location.href = 'admin-login.html';
     }
 }
-
-requireAdminAuth();
 
 // POPULATE NAVBAR
 const adminData   = JSON.parse(localStorage.getItem('admin') || '{}');
