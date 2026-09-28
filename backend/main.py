@@ -7,8 +7,7 @@ from backend.models import (
     Client, Administrator, Location, Submission,
     Image, Prediction, Listing, Notification
 )
-from backend.routes import auth, submission
-from fastapi.middleware.cors import CORSMiddleware
+from backend.routes import auth, submission, notification
 
 # Create the FastAPI app
 app = FastAPI(title="NyumbaAI", version="1.0.0")
@@ -28,6 +27,7 @@ Base.metadata.create_all(bind=engine)
 # Include routers
 app.include_router(auth.router)
 app.include_router(submission.router)
+app.include_router(notification.router)
 
 # Root endpoint
 @app.get("/")
