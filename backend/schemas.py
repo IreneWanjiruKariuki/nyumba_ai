@@ -89,7 +89,14 @@ class ListingResponse(BaseModel):
 # SUBMISSION SCHEMA
 class SubmissionResponse(BaseModel):
     submissionID:    int
-    description:     str
+    propertyType:    str
+    bedrooms:        int
+    bathrooms:       int
+    sizeSqm:         float
+    hasParking:      bool
+    hasDSQ:          bool
+    hasGarden:       bool
+    hasBorehole:     bool
     status:          str
     rejectionReason: Optional[str]
     submittedAt:     datetime
@@ -124,7 +131,14 @@ class ClientInSubmission(BaseModel):
 
 class AdminSubmissionResponse(BaseModel):
     submissionID:    int
-    description:     str
+    propertyType:    str
+    bedrooms:        int
+    bathrooms:       int
+    sizeSqm:         float
+    hasParking:      bool
+    hasDSQ:          bool
+    hasGarden:       bool
+    hasBorehole:     bool
     status:          str
     rejectionReason: Optional[str]
     submittedAt:     datetime
