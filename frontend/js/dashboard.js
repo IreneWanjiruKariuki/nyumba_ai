@@ -71,49 +71,53 @@ function renderPredictions(submissions) {
     }
 
     tbody.innerHTML = submissions.map(sub => {
-        const statusBadge = {
-            pending:  'badge-neutral',
-            approved: 'badge-success',
-            rejected: 'badge-danger',
-        }[sub.status] || 'badge-neutral';
+    const statusBadge = {
+        pending:  'badge-neutral',
+        approved: 'badge-success',
+        rejected: 'badge-danger',
+    }[sub.status] || 'badge-neutral';
 
-        const salePrice = sub.prediction
-            ? `KES ${sub.prediction.salePrice.toLocaleString()}`
-            : '—';
+    const salePrice = sub.prediction
+        ? `KES ${Number(sub.prediction.salePrice).toLocaleString()}`
+        : '—';
 
-        const rentalPrice = sub.prediction
-            ? `KES ${sub.prediction.rentalPrice.toLocaleString()}/mo`
-            : '—';
+    const rentalPrice = sub.prediction
+        ? `KES ${Number(sub.prediction.rentalPrice).toLocaleString()}/mo`
+        : '—';
 
-        const actionBtn = sub.status === 'approved' && !sub.listing
-            ? `<a href="submit-property.html?list=${sub.submissionID}"
-                  class="btn btn-sm btn-secondary">
-                   List Property
-               </a>`
-            : sub.status === 'rejected'
-            ? `<a href="submit-property.html?resubmit=${sub.submissionID}"
-                  class="btn btn-sm btn-ghost">
-                   Resubmit
-               </a>`
-            : '—';
+    const actionBtn = sub.status === 'approved' && !sub.listing
+        ? `<a href="submit-property.html?list=${sub.submissionID}"
+              class="btn btn-sm btn-secondary">
+               List Property
+           </a>`
+        : sub.status === 'rejected'
+        ? `<a href="submit-property.html?resubmit=${sub.submissionID}"
+              class="btn btn-sm btn-ghost">
+               Resubmit
+           </a>`
+        : '—';
 
-        return `
-            <tr>
-                <td class="td-description">
-                    ${sub.description}
-                </td>
-                <td style="font-size:13px;color:var(--text-muted)">
-                    ${sub.location ? sub.location.cityOrCounty : '—'}
-                </td>
-                <td class="td-price">${salePrice}</td>
-                <td class="td-price">${rentalPrice}</td>
-                <td>
-                    <span class="badge ${statusBadge}">
-                        ${sub.status}
-                    </span>
-                </td>
-                <td>${actionBtn}</td>
-            </tr>`;
+    return `
+        <tr>
+            <td style="font-size:13.5px;font-weight:600">
+                ${sub.propertyType}
+            </td>
+            <td style="font-size:13px;color:var(--text-muted)">
+                ${sub.location ? sub.location.cityOrCounty : '—'}
+            </td>
+            <td style="font-size:13px;color:var(--text-muted)">
+                ${sub.bedrooms} bed · ${sub.bathrooms} bath
+                · ${sub.sizeSqm} sqm
+            </td>
+            <td class="td-price">${salePrice}</td>
+            <td class="td-price">${rentalPrice}</td>
+            <td>
+                <span class="badge ${statusBadge}">
+                    ${sub.status}
+                </span>
+            </td>
+            <td>${actionBtn}</td>
+        </tr>`;
     }).join('');
 }
 
