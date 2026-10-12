@@ -179,13 +179,80 @@ if (reviewContent) {
             if (loadingState)  loadingState.style.display  = 'none';
             if (reviewContent) reviewContent.style.display = 'block';
 
-            // Populate description
+            // Populate structured property details
             document.getElementById('reviewTitle').textContent =
                 `Review Submission #${sub.submissionID}`;
-            document.getElementById('reviewDescription').textContent =
-                sub.description;
-            document.getElementById('reviewLocation').textContent =
-                sub.location ? sub.location.cityOrCounty : '—';
+
+            // Build a readable property summary
+            const amenities = [];
+            if (sub.hasParking)  amenities.push('Secure Parking');
+            if (sub.hasDSQ)      amenities.push('DSQ');
+            if (sub.hasGarden)   amenities.push('Garden');
+            if (sub.hasBorehole) amenities.push('Borehole');
+
+            document.getElementById('reviewDescription').innerHTML = `
+                <div style="display:flex;flex-direction:column;gap:10px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                        <div>
+                            <div style="font-size:12px;color:#6B7280;
+                                        font-weight:600;margin-bottom:3px">
+                                PROPERTY TYPE
+                            </div>
+                            <div style="font-size:15px;font-weight:600">
+                                ${sub.propertyType}
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:12px;color:#6B7280;
+                                        font-weight:600;margin-bottom:3px">
+                                LOCATION
+                            </div>
+                            <div style="font-size:15px;font-weight:600">
+                                ${sub.location ? sub.location.cityOrCounty : '—'}
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:12px;color:#6B7280;
+                                        font-weight:600;margin-bottom:3px">
+                                BEDROOMS
+                            </div>
+                            <div style="font-size:15px;font-weight:600">
+                                ${sub.bedrooms}
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:12px;color:#6B7280;
+                                        font-weight:600;margin-bottom:3px">
+                                BATHROOMS
+                            </div>
+                            <div style="font-size:15px;font-weight:600">
+                                ${sub.bathrooms}
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:12px;color:#6B7280;
+                                        font-weight:600;margin-bottom:3px">
+                                SIZE
+                            </div>
+                            <div style="font-size:15px;font-weight:600">
+                                ${sub.sizeSqm} sqm
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:12px;color:#6B7280;
+                                        font-weight:600;margin-bottom:3px">
+                                AMENITIES
+                            </div>
+                            <div style="font-size:14px;font-weight:500">
+                                ${amenities.length > 0
+                                    ? amenities.join(', ')
+                                    : 'None selected'}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
             document.getElementById('reviewOwner').textContent =
                 sub.client ? sub.client.name : '—';
             document.getElementById('reviewDate').textContent =
