@@ -12,7 +12,7 @@ from backend.utils.auth_helpers import get_current_client
 
 router = APIRouter()
 
-# GET ALL LOCATIONS
+# Get all locations
 @router.get("/locations")
 def get_locations(db: Session = Depends(get_db)):
     locations = db.query(Location).order_by(Location.cityOrCounty).all()
@@ -25,23 +25,57 @@ def get_locations(db: Session = Depends(get_db)):
         for loc in locations
     ]
 
-# POST (CREATE NEW SUBMISSION)
+# Valid property types
+VALID_PROPERTY_TYPES = [
+    'Apartment', 'Maisonette', 'Bungalow',
+    'Townhouse', 'Villa', 'Bedsitter', 'Studio'
+]
+
+# POST /submissions
 @router.post(
     "/submissions",
     status_code=status.HTTP_201_CREATED
 )
 async def create_submission(
-    description: str        = Form(...),
-    locationID:  int        = Form(...),
-    images:      List[UploadFile] = File(...),
-    db:          Session    = Depends(get_db),
-    current_client: Client  = Depends(get_current_client),
+    propertyType: str              = Form(...),
+    bedrooms:     int              = Form(...),
+    bathrooms:    int              = Form(...),
+    sizeSqm:      float            = Form(...),
+    hasParking:   bool             = Form(False),
+    hasDSQ:       bool             = Form(False),
+    hasGarden:    bool             = Form(False),
+    hasBorehole:  bool             = Form(False),
+    locationID:   int              = Form(...),
+    images:       List[UploadFile] = File(...),
+    db:           Session          = Depends(get_db),
+    current_client: Client         = Depends(get_current_client),
 ):
-    # Validate description
-    if not description or len(description.strip()) < 30:
+    # Validate property type
+    if propertyType not in VALID_PROPERTY_TYPES:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="Description must be at least 30 characters"
+            detail=f"Invalid property type. Must be one of: "
+                   f"{', '.join(VALID_PROPERTY_TYPES)}"
+        )
+
+    # Validate bedrooms and bathrooms
+    if bedrooms < 0 or bedrooms > 6:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Bedrooms must be between 0 and 6"
+        )
+
+    if bathrooms < 1 or bathrooms > 5:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Bathrooms must be between 1 and 5"
+        )
+
+    # Validate size
+    if sizeSqm <= 0:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Size must be greater than 0"
         )
 
     # Validate location
@@ -72,16 +106,23 @@ async def create_submission(
 
     # Create submission record
     new_submission = Submission(
-        clientID    = current_client.clientID,
-        locationID  = locationID,
-        description = description.strip(),
-        status      = "pending",
+        clientID     = current_client.clientID,
+        locationID   = locationID,
+        propertyType = propertyType,
+        bedrooms     = bedrooms,
+        bathrooms    = bathrooms,
+        sizeSqm      = sizeSqm,
+        hasParking   = hasParking,
+        hasDSQ       = hasDSQ,
+        hasGarden    = hasGarden,
+        hasBorehole  = hasBorehole,
+        status       = "pending",
     )
     db.add(new_submission)
     db.commit()
     db.refresh(new_submission)
 
-    # Save images and create Image records
+    # Save images
     for image in images:
         try:
             file_path = await save_image(image)
@@ -91,7 +132,6 @@ async def create_submission(
             )
             db.add(new_image)
         except ValueError as e:
-            # Clean up the submission if an image fails
             db.delete(new_submission)
             db.commit()
             raise HTTPException(
