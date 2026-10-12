@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css/main.css">
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/subprop.css">
+    
 </head>
 <body>
 
@@ -30,8 +31,8 @@
         <div class="submit-header">
             <h1>Submit Your Property</h1>
             <p>
-                Describe your property to receive a sale
-                and rental price prediction
+                Fill in your property details to receive
+                a sale and rental price prediction
             </p>
         </div>
 
@@ -39,7 +40,7 @@
         <div class="progress-steps">
             <div class="step active">
                 <span class="step-num">1</span>
-                <span>Describe property</span>
+                <span>Property details</span>
             </div>
             <div class="step-line"></div>
             <div class="step">
@@ -58,59 +59,158 @@
             </div>
         </div>
 
-        <!-- Alert -->
+        <!-- Alerts -->
         <div class="alert alert-error"   id="submitError"></div>
         <div class="alert alert-success" id="submitSuccess"></div>
 
         <form id="submitForm" novalidate>
 
-            <!-- Description card -->
+            <!-- Property details card -->
             <div class="submit-card">
-                <h2>Property Description</h2>
+                <h2>Property Details</h2>
 
-                <div class="form-group">
-                    <label for="description">
-                        Describe your property  *
-                    </label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        placeholder="e.g. Three-bedroom maisonette in Kilimani with a DSQ, borehole, en-suite master bedroom and secure parking. The property has a well-maintained garden and is in excellent condition..."
-                        maxlength="1000"
-                    ></textarea>
-                    <div class="char-count">
-                        <span id="charCount">0</span> / 1000 characters
+                <!-- Property type and location -->
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label for="propertyType">
+                            Property type  *
+                        </label>
+                        <select id="propertyType" name="propertyType">
+                            <option value="">Select type...</option>
+                            <option value="Apartment">Apartment</option>
+                            <option value="Maisonette">Maisonette</option>
+                            <option value="Bungalow">Bungalow</option>
+                            <option value="Townhouse">Townhouse</option>
+                            <option value="Villa">Villa</option>
+                            <option value="Bedsitter">Bedsitter</option>
+                            <option value="Studio">Studio</option>
+                        </select>
+                        <span class="form-error" id="propertyTypeError">
+                            Please select a property type
+                        </span>
                     </div>
-                    <span class="form-error" id="descriptionError">
-                        Please enter a property description
-                        (minimum 30 characters)
-                    </span>
+
+                    <div class="form-group">
+                        <label for="locationID">
+                            Nairobi neighbourhood  *
+                        </label>
+                        <select id="locationID" name="locationID">
+                            <option value="">
+                                Select neighbourhood...
+                            </option>
+                        </select>
+                        <span class="form-error" id="locationError">
+                            Please select a neighbourhood
+                        </span>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="locationID">
-                        Nairobi neighbourhood  *
+                <!-- Bedrooms, bathrooms, size -->
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label for="bedrooms">Bedrooms  *</label>
+                        <select id="bedrooms" name="bedrooms">
+                            <option value="">Select...</option>
+                            <option value="0">0 (Bedsitter/Studio)</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                        </select>
+                        <span class="form-error" id="bedroomsError">
+                            Please select number of bedrooms
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bathrooms">Bathrooms  *</label>
+                        <select id="bathrooms" name="bathrooms">
+                            <option value="">Select...</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <span class="form-error" id="bathroomsError">
+                            Please select number of bathrooms
+                        </span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="sizeSqm">
+                            Size (square metres)  *
+                        </label>
+                        <input
+                            type="number"
+                            id="sizeSqm"
+                            name="sizeSqm"
+                            placeholder="e.g. 120"
+                            min="10"
+                            max="2000"
+                        >
+                        <span class="form-error" id="sizeSqmError">
+                            Please enter a valid size
+                        </span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Amenities card -->
+            <div class="submit-card">
+                <h2>Amenities</h2>
+                <p style="font-size:13px;color:var(--text-muted);
+                           margin-bottom:16px;">
+                    Select all that apply to your property
+                </p>
+
+                <div class="checkbox-group">
+                    <label class="checkbox-item" id="parkingLabel">
+                        <input
+                            type="checkbox"
+                            id="hasParking"
+                            name="hasParking"
+                        >
+                        <span>🚗 Secure Parking</span>
                     </label>
-                    <select id="locationID" name="locationID">
-                        <option value="">
-                            Select neighbourhood...
-                        </option>
-                    </select>
-                    <span class="form-error" id="locationError">
-                        Please select a neighbourhood
-                    </span>
-                </div>
 
+                    <label class="checkbox-item" id="dsqLabel">
+                        <input
+                            type="checkbox"
+                            id="hasDSQ"
+                            name="hasDSQ"
+                        >
+                        <span>🏠 DSQ (Staff Quarters)</span>
+                    </label>
+
+                    <label class="checkbox-item" id="gardenLabel">
+                        <input
+                            type="checkbox"
+                            id="hasGarden"
+                            name="hasGarden"
+                        >
+                        <span>🌿 Garden</span>
+                    </label>
+
+                    <label class="checkbox-item" id="boreholeLabel">
+                        <input
+                            type="checkbox"
+                            id="hasBorehole"
+                            name="hasBorehole"
+                        >
+                        <span>💧 Borehole</span>
+                    </label>
+                </div>
             </div>
 
             <!-- Images card -->
             <div class="submit-card">
                 <h2>Property Images</h2>
 
-                <div
-                    class="upload-zone"
-                    id="uploadZone"
-                >
+                <div class="upload-zone" id="uploadZone">
                     <input
                         type="file"
                         id="imageInput"
@@ -122,8 +222,7 @@
                         Drag and drop or click to upload
                     </div>
                     <div class="upload-hint">
-                        JPG or PNG  ·  Max 5MB per image
-                        ·  At least 1 image required
+                        JPG or PNG · Max 5MB each · At least 1 required
                     </div>
                 </div>
 
@@ -132,7 +231,6 @@
                 </span>
 
                 <div class="preview-grid" id="previewGrid"></div>
-
             </div>
 
             <!-- Submit row -->
@@ -146,13 +244,8 @@
                     id="submitBtn"
                     style="padding: 12px 32px;"
                 >
-                    <span id="submitBtnText">
-                        Submit for Review
-                    </span>
-                    <span
-                        class="spinner"
-                        id="submitSpinner"
-                    ></span>
+                    <span id="submitBtnText">Submit for Review</span>
+                    <span class="spinner" id="submitSpinner"></span>
                 </button>
             </div>
 
