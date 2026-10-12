@@ -8,7 +8,7 @@ from backend.database import get_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
-# ── CREATE TOKEN ──────────────────────────────────────────────
+# CREATE TOKEN 
 def create_access_token(data: dict) -> str:
     """Create a JWT token with an expiry time"""
     to_encode = data.copy()
@@ -18,7 +18,7 @@ def create_access_token(data: dict) -> str:
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-# ── DECODE TOKEN ──────────────────────────────────────────────
+# DECODE TOKEN
 def decode_access_token(token: str) -> dict:
     """Decode and verify a JWT token"""
     try:
@@ -29,7 +29,7 @@ def decode_access_token(token: str) -> dict:
     except JWTError:
         return None
 
-# ── GET CURRENT CLIENT ────────────────────────────────────────
+# GET CURRENT CLIENT
 def get_current_client(
     token:  str     = Depends(oauth2_scheme),
     db:     Session = Depends(get_db)
@@ -72,7 +72,7 @@ def get_current_client(
 
     return client
 
-# ── GET CURRENT ADMIN ─────────────────────────────────────────
+# GET CURRENT ADMIN
 def get_current_admin(
     token:  str     = Depends(oauth2_scheme),
     db:     Session = Depends(get_db)
