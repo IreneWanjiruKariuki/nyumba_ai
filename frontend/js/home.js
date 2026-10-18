@@ -46,7 +46,10 @@ async function loadRecentActivity() {
         container.innerHTML = recent.map(sub => `
             <div class="activity-item">
                 <span class="activity-text">
-                    Submission — ${sub.description.substring(0, 50)}...
+                    Submission — ${sub.bedrooms === 0
+                        ? ''
+                        : sub.bedrooms + '-bed '}${sub.propertyType}
+                    in ${sub.location ? sub.location.cityOrCounty : '—'}
                 </span>
                 <div style="display:flex;align-items:center;gap:12px">
                     <span class="badge badge-${

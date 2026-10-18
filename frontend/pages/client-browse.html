@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Properties — NyumbaAI</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/listings.css">
+</head>
+<body>
+
+<div class="dashboard-page">
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="home.html" class="navbar-brand">
+            Nyumba<span style="color:#52B788">AI</span>
+        </a>
+        <ul class="navbar-links">
+            <li><span id="welcomeName"></span></li>
+            <li><a href="home.html">Switch role</a></li>
+            <li><a href="#" id="logoutBtn">Logout</a></li>
+        </ul>
+    </nav>
+
+    <div class="dashboard-content">
+
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h1>Browse Properties</h1>
+                <p>
+                    Verified homes for sale and rent across Nairobi,
+                    with an AI price estimate for every listing
+                </p>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label for="filterType">Looking to</label>
+                <select id="filterType">
+                    <option value="">Buy or rent</option>
+                    <option value="sale">Buy</option>
+                    <option value="rent">Rent</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filterLocation">Neighbourhood</label>
+                <select id="filterLocation">
+                    <option value="">All neighbourhoods</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filterProperty">Property type</label>
+                <select id="filterProperty">
+                    <option value="">All types</option>
+                    <option value="Apartment">Apartment</option>
+                    <option value="Maisonette">Maisonette</option>
+                    <option value="Bungalow">Bungalow</option>
+                    <option value="Townhouse">Townhouse</option>
+                    <option value="Villa">Villa</option>
+                    <option value="Bedsitter">Bedsitter</option>
+                    <option value="Studio">Studio</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="filterBedrooms">Bedrooms</label>
+                <select id="filterBedrooms">
+                    <option value="">Any</option>
+                    <option value="0">Bedsitter / Studio</option>
+                    <option value="1">1+</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sortBy">Sort by</label>
+                <select id="sortBy">
+                    <option value="newest">Newest first</option>
+                    <option value="priceAsc">Price: low to high</option>
+                    <option value="priceDesc">Price: high to low</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="results-bar">
+            <span id="resultsCount">Loading listings...</span>
+            <button class="btn btn-sm btn-ghost" id="clearFilters">
+                Clear filters
+            </button>
+        </div>
+
+        <div class="alert alert-error" id="browseError"></div>
+
+        <!-- Listing cards -->
+        <div class="browse-grid" id="browseGrid"></div>
+
+    </div>
+</div>
+
+<!-- Listing detail popup -->
+<div class="modal-backdrop" id="listingModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true"
+         aria-labelledby="modalTitle">
+        <button class="modal-close" id="modalClose"
+                aria-label="Close">✕</button>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<script src="../js/fetch.js"></script>
+<script src="../js/browse.js"></script>
+</body>
+</html>

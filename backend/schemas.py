@@ -99,6 +99,31 @@ class ListingUpdate(BaseModel):
 class ListingCreate(ListingUpdate):
     submissionID:      int
 
+# A public listing as shown on the customer browse page:
+# the listing itself plus the property details it was created from
+class BrowseListingResponse(BaseModel):
+    listingID:         int
+    listingType:       str
+    askingSalePrice:   Optional[float]
+    askingRentalPrice: Optional[float]
+    description:       str
+    contactMethod:     str
+    contactValue:      str
+    createdAt:         datetime
+    ownerName:         str
+    propertyType:      str
+    bedrooms:          int
+    bathrooms:         int
+    sizeSqm:           float
+    hasParking:        bool
+    hasDSQ:            bool
+    hasGarden:         bool
+    hasBorehole:       bool
+    isFurnished:       bool
+    location:          Optional[LocationResponse]
+    images:            list[ImageResponse]
+    prediction:        Optional[PredictionResponse]
+
 # SUBMISSION SCHEMA
 class SubmissionResponse(BaseModel):
     submissionID:    int

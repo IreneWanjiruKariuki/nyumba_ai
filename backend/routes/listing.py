@@ -1,10 +1,13 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from backend.database import get_db
 from backend.models.client import Client
 from backend.models.listing import Listing
 from backend.models.submission import Submission
-from backend.schemas import ListingCreate, ListingResponse, ListingUpdate
+from backend.schemas import (
+    BrowseListingResponse, ListingCreate, ListingResponse, ListingUpdate
+)
 from backend.utils.auth_helpers import get_current_client
 
 router = APIRouter()
@@ -66,6 +69,55 @@ def apply_listing_details(listing: Listing, data: ListingUpdate) -> None:
     listing.description       = description
     listing.contactMethod     = data.contactMethod
     listing.contactValue      = contact_value
+
+
+# BROWSE ACTIVE LISTINGS
+@router.get(
+    "/listings",
+    response_model=List[BrowseListingResponse],
+)
+def browse_listings(
+    db:             Session = Depends(get_db),
+    current_client: Client  = Depends(get_current_client),
+):
+    """All active listings with their property details, newest first."""
+    listings = db.query(Listing).options(
+        joinedload(Listing.client),
+        joinedload(Listing.prediction),
+        joinedload(Listing.submission).joinedload(Submission.location),
+        joinedload(Listing.submission).joinedload(Submission.images),
+    ).filter(
+        Listing.status == "active"
+    ).order_by(Listing.createdAt.desc()).all()
+
+    results = []
+    for listing in listings:
+        sub = listing.submission
+        results.append(BrowseListingResponse(
+            listingID         = listing.listingID,
+            listingType       = listing.listingType,
+            askingSalePrice   = listing.askingSalePrice,
+            askingRentalPrice = listing.askingRentalPrice,
+            description       = listing.description,
+            contactMethod     = listing.contactMethod,
+            contactValue      = listing.contactValue,
+            createdAt         = listing.createdAt,
+            ownerName         = listing.client.name,
+            propertyType      = sub.propertyType,
+            bedrooms          = sub.bedrooms,
+            bathrooms         = sub.bathrooms,
+            sizeSqm           = sub.sizeSqm,
+            hasParking        = sub.hasParking,
+            hasDSQ            = sub.hasDSQ,
+            hasGarden         = sub.hasGarden,
+            hasBorehole       = sub.hasBorehole,
+            isFurnished       = sub.isFurnished,
+            location          = sub.location,
+            images            = sub.images,
+            prediction        = listing.prediction,
+        ))
+
+    return results
 
 
 # CREATE LISTING
