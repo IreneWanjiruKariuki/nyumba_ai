@@ -147,7 +147,12 @@ function renderListings(submissions) {
                     <div class="listing-thumb">img</div>
                     <div class="listing-info">
                         <div class="listing-title">
-                            ${sub.description.substring(0, 55)}...
+                            ${sub.bedrooms === 0
+                                ? ''
+                                : sub.bedrooms + '-bed '}${sub.propertyType}
+                            in ${sub.location
+                                ? sub.location.cityOrCounty
+                                : '—'}
                         </div>
                         <div class="listing-meta">
                             <span>

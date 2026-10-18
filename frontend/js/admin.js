@@ -192,6 +192,7 @@ if (reviewContent) {
             if (sub.hasDSQ)      amenities.push('DSQ');
             if (sub.hasGarden)   amenities.push('Garden');
             if (sub.hasBorehole) amenities.push('Borehole');
+            if (sub.isFurnished) amenities.push('Furnished');
 
             document.getElementById('reviewDescription').innerHTML = `
                 <div style="display:grid;grid-template-columns:1fr 1fr;
@@ -381,7 +382,7 @@ if (reviewContent) {
             approveBtn.textContent = 'Approving...';
 
             try {
-                await adminFetch(
+                const result = await adminFetch(
                     `/admin/submissions/${submissionID}/approve`,
                     { method: 'PUT' }
                 );
@@ -391,8 +392,11 @@ if (reviewContent) {
                 if (successEl) {
                     successEl.textContent =
                         'Submission approved successfully. ' +
-                        'Price prediction has been triggered. ' +
-                        'Redirecting to dashboard...';
+                        'Predicted sale price: KES ' +
+                        Number(result.salePrice).toLocaleString() +
+                        ', rental price: KES ' +
+                        Number(result.rentalPrice).toLocaleString() +
+                        '/mo. Redirecting to dashboard...';
                     successEl.classList.add('visible');
                 }
 

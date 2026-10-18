@@ -27,7 +27,11 @@ GEO_SCORES: dict[str, float] = {
 }
 
 
-# Lazy model loading 
+class ModelLoadError(RuntimeError):
+    """A model file exists but could not be loaded."""
+
+
+# Lazy model loading
 @lru_cache(maxsize=1)
 def _load_artefacts() -> dict:
     required = [
@@ -56,11 +60,21 @@ def _load_artefacts() -> dict:
     with open(MODELS_DIR / "rental_features.json") as f:
         rental_feats: list[str] = json.load(f)
 
+    # Load each model file separately so a broken file is reported by name.
+    # Failures here are server problems (corrupt file or library version
+    # mismatch), so they are raised as ModelLoadError, not ValueError, which
+    # the router would otherwise report as bad user input.
+    def _load(filename: str):
+        try:
+            return joblib.load(MODELS_DIR / filename)
+        except Exception as exc:
+            raise ModelLoadError(f"Could not load {filename}: {exc}") from exc
+
     return {
-        "sale_model":   joblib.load(MODELS_DIR / "sale_model.joblib"),
-        "rental_model": joblib.load(MODELS_DIR / "rental_model.joblib"),
-        "le_type":      joblib.load(MODELS_DIR / "encoder_propertyType.joblib"),
-        "le_loc":       joblib.load(MODELS_DIR / "encoder_location.joblib"),
+        "sale_model":   _load("sale_model.joblib"),
+        "rental_model": _load("rental_model.joblib"),
+        "le_type":      _load("encoder_propertyType.joblib"),
+        "le_loc":       _load("encoder_location.joblib"),
         "sale_feats":   sale_feats,
         "rental_feats": rental_feats,
     }

@@ -97,6 +97,7 @@ class SubmissionResponse(BaseModel):
     hasDSQ:          bool
     hasGarden:       bool
     hasBorehole:     bool
+    isFurnished:     bool
     status:          str
     rejectionReason: Optional[str]
     submittedAt:     datetime
@@ -139,6 +140,7 @@ class AdminSubmissionResponse(BaseModel):
     hasDSQ:          bool
     hasGarden:       bool
     hasBorehole:     bool
+    isFurnished:     bool
     status:          str
     rejectionReason: Optional[str]
     submittedAt:     datetime

@@ -45,6 +45,7 @@ async def create_submission(
     hasDSQ:       bool             = Form(False),
     hasGarden:    bool             = Form(False),
     hasBorehole:  bool             = Form(False),
+    isFurnished:  bool             = Form(False),
     locationID:   int              = Form(...),
     images:       List[UploadFile] = File(...),
     db:           Session          = Depends(get_db),
@@ -116,6 +117,7 @@ async def create_submission(
         hasDSQ       = hasDSQ,
         hasGarden    = hasGarden,
         hasBorehole  = hasBorehole,
+        isFurnished  = isFurnished,
         status       = "pending",
     )
     db.add(new_submission)

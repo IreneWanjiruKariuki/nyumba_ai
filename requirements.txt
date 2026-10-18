@@ -14,10 +14,10 @@ python-jose[cryptography]==3.3.0
 python-multipart==0.0.9
 
 # NLP and ML
-spacy==3.7.4
-xgboost==2.0.3
-scikit-learn==1.4.2
-numpy==1.26.4
+spacy==3.8.16
+xgboost==3.4.1
+scikit-learn==1.6.1
+numpy==2.5.4
 pandas==2.2.2
 joblib==1.4.2
 

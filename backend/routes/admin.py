@@ -9,6 +9,7 @@ from backend.models.prediction import Prediction
 from backend.schemas import AdminSubmissionResponse, RejectSubmission
 from backend.utils.auth_helpers import get_current_admin
 from backend.services.notification_service import create_notification
+from backend.services.prediction_service import ModelLoadError, predict_prices
 
 router = APIRouter()
 
@@ -68,10 +69,10 @@ def approve_submission(
 ):
     """
     Approve a submission.
-    Updates status to approved, records the adminID,
-    creates a placeholder prediction record,
+    Runs the price prediction pipeline, updates status to approved,
+    records the adminID, saves the predicted prices,
     and sends an approval notification to the owner.
-
+    If the prediction fails, nothing is changed so the admin can retry.
     """
     submission = db.query(Submission).options(
         joinedload(Submission.client),
@@ -92,27 +93,48 @@ def approve_submission(
             detail=f"Submission is already {submission.status}"
         )
 
-    # Update submission status
+    # Run the prediction pipeline BEFORE changing anything,
+    # so a failed prediction leaves the submission pending
+    location_name = (
+        submission.location.cityOrCounty
+        if submission.location else "your area"
+    )
+    try:
+        result = predict_prices(
+            property_type = submission.propertyType,
+            location      = location_name,
+            bedrooms      = submission.bedrooms,
+            bathrooms     = submission.bathrooms,
+            size_sqm      = submission.sizeSqm,
+            has_parking   = submission.hasParking,
+            has_dsq       = submission.hasDSQ,
+            has_garden    = submission.hasGarden,
+            has_borehole  = submission.hasBorehole,
+            is_furnished  = submission.isFurnished,
+        )
+    except (FileNotFoundError, ModelLoadError, ValueError) as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=f"Price prediction failed, submission not approved: {exc}"
+        )
+
+    sale_price   = result["predicted_sale_price"]
+    rental_price = result["predicted_rental_price"]
+
+    # Update submission status and save the prediction together
     submission.status  = "approved"
     submission.adminID = current_admin.adminID
-    db.commit()
 
-    # Create placeholder prediction
-    # Real values will be filled in Week 4 by the ML pipeline
     new_prediction = Prediction(
         submissionID = submission.submissionID,
-        salePrice    = 0.0,
-        rentalPrice  = 0.0,
+        salePrice    = sale_price,
+        rentalPrice  = rental_price,
     )
     db.add(new_prediction)
     db.commit()
     db.refresh(new_prediction)
 
     # Send approval notification to owner
-    location_name = (
-        submission.location.cityOrCounty
-        if submission.location else "your area"
-    )
     create_notification(
         db           = db,
         clientID     = submission.clientID,
@@ -120,10 +142,10 @@ def approve_submission(
         type         = "approval",
         message      = (
             f"Your submission has been approved. "
-            f"Your property in {location_name} is being "
-            f"processed for price prediction. "
-            f"You will receive your sale and rental "
-            f"price estimates shortly."
+            f"Your property in {location_name} has an estimated "
+            f"sale price of KES {sale_price:,} and an estimated "
+            f"rental price of KES {rental_price:,}/month. "
+            f"View the details on your dashboard."
         )
     )
 
@@ -131,6 +153,8 @@ def approve_submission(
         "message":      "Submission approved successfully",
         "submissionID": submission.submissionID,
         "status":       "approved",
+        "salePrice":    sale_price,
+        "rentalPrice":  rental_price,
     }
 
 # REJECT SUBMISSION

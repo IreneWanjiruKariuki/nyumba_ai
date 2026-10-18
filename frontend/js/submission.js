@@ -209,6 +209,7 @@ if (submitForm) {
         const hasDSQ       = document.getElementById('hasDSQ').checked;
         const hasGarden    = document.getElementById('hasGarden').checked;
         const hasBorehole  = document.getElementById('hasBorehole').checked;
+        const isFurnished  = document.getElementById('isFurnished').checked;
         const activeFiles  = selectedFiles.filter(f => f !== null);
 
         // Build multipart form data
@@ -222,6 +223,7 @@ if (submitForm) {
         formData.append('hasDSQ',       hasDSQ);
         formData.append('hasGarden',    hasGarden);
         formData.append('hasBorehole',  hasBorehole);
+        formData.append('isFurnished',  isFurnished);
         activeFiles.forEach(file => {
             formData.append('images', file);
         });

@@ -26,6 +26,7 @@ class Submission(Base):
     hasDSQ          = Column(Boolean,     default=False, nullable=False)
     hasGarden       = Column(Boolean,     default=False, nullable=False)
     hasBorehole     = Column(Boolean,     default=False, nullable=False)
+    isFurnished     = Column(Boolean,     default=False, nullable=False)
 
     # ── Submission metadata ───────────────────────────────────
     status          = Column(String(20),  default="pending", nullable=False)

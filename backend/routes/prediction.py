@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field, field_validator
 
-from backend.services.prediction_service import predict_prices
+from backend.services.prediction_service import ModelLoadError, predict_prices
 
 router = APIRouter()
 
@@ -14,7 +14,7 @@ router = APIRouter()
 class PredictRequest(BaseModel):
     propertyType: str   = Field(..., examples=["Apartment", "Townhouse", "Maisonette", "Bungalow", "Villa"])
     location:     str   = Field(..., examples=["Kilimani", "Karen", "Westlands"])
-    bedrooms:     int   = Field(..., ge=1, le=10)   # ge = greater-or-equal, le = less-or-equal
+    bedrooms:     int   = Field(..., ge=0, le=10)   # ge = greater-or-equal, le = less-or-equal; 0 = Bedsitter/Studio
     bathrooms:    int   = Field(..., ge=1, le=10)
     sizeSqm:      float = Field(..., gt=0, le=2000)
     hasParking:   bool  = False
@@ -52,8 +52,8 @@ def predict(body: PredictRequest) -> PredictResponse:
             has_borehole  = body.hasBorehole,
             is_furnished  = body.isFurnished,
         )
-    except FileNotFoundError as exc:
-        # Model files missing — server is misconfigured
+    except (FileNotFoundError, ModelLoadError) as exc:
+        # Model files missing or unloadable — server is misconfigured
         raise HTTPException(status_code=503, detail=str(exc))
     except ValueError as exc:
         # Unknown propertyType or location string
