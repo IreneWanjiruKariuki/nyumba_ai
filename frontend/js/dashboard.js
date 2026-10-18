@@ -85,11 +85,14 @@ function renderPredictions(submissions) {
         ? `KES ${Number(sub.prediction.rentalPrice).toLocaleString()}/mo`
         : '—';
 
-    const actionBtn = sub.status === 'approved' && !sub.listing
-        ? `<a href="submit-property.html?list=${sub.submissionID}"
+    const isListed  = sub.listing && sub.listing.status === 'active';
+    const actionBtn = sub.status === 'approved' && !isListed
+        ? `<a href="list-property.html?submission=${sub.submissionID}"
               class="btn btn-sm btn-secondary">
                List Property
            </a>`
+        : isListed
+        ? `<span class="badge badge-success">Listed</span>`
         : sub.status === 'rejected'
         ? `<a href="submit-property.html?resubmit=${sub.submissionID}"
               class="btn btn-sm btn-ghost">
@@ -140,11 +143,33 @@ function renderListings(submissions) {
         return;
     }
 
+    const typeLabels = { sale: 'For Sale', rent: 'For Rent', both: 'Sale & Rent' };
+
     container.innerHTML = `
         <div class="listings-grid">
-            ${active.map(sub => `
+            ${active.map(sub => {
+                const listing = sub.listing;
+                const thumb   = sub.images && sub.images.length > 0
+                    ? `<img class="listing-thumb"
+                            src="${API_BASE}/${sub.images[0].filePath.replace(/\\/g, '/')}"
+                            alt="Property photo">`
+                    : `<div class="listing-thumb">No image</div>`;
+
+                const prices = [];
+                if (listing.askingSalePrice !== null) {
+                    prices.push(`KES ${Number(listing.askingSalePrice).toLocaleString()}`);
+                }
+                if (listing.askingRentalPrice !== null) {
+                    prices.push(`KES ${Number(listing.askingRentalPrice).toLocaleString()}/mo`);
+                }
+
+                const description = listing.description.length > 110
+                    ? listing.description.substring(0, 110) + '…'
+                    : listing.description;
+
+                return `
                 <div class="listing-card">
-                    <div class="listing-thumb">img</div>
+                    ${thumb}
                     <div class="listing-info">
                         <div class="listing-title">
                             ${sub.bedrooms === 0
@@ -154,24 +179,29 @@ function renderListings(submissions) {
                                 ? sub.location.cityOrCounty
                                 : '—'}
                         </div>
+                        <div class="listing-meta"
+                             style="margin-bottom:4px;">
+                            <span>${escapeHtml(description)}</span>
+                        </div>
                         <div class="listing-meta">
-                            <span>
-                                ${sub.listing.listingType === 'both'
-                                    ? 'Sale & Rental'
-                                    : sub.listing.listingType}
+                            <span class="badge badge-success">
+                                ${typeLabels[listing.listingType] || listing.listingType}
+                            </span>
+                            <span style="font-weight:600;color:var(--text)">
+                                ${prices.join(' · ')}
                             </span>
                             <span>
-                                KES ${Number(sub.listing.askingPrice)
-                                    .toLocaleString()}
-                            </span>
-                            <span>
-                                ${sub.location
-                                    ? sub.location.cityOrCounty
-                                    : ''}
+                                Contact: ${escapeHtml(listing.contactValue)}
                             </span>
                         </div>
                     </div>
                     <div class="listing-actions">
+                        <a
+                            href="list-property.html?submission=${sub.submissionID}&edit=1"
+                            class="btn btn-sm btn-secondary"
+                        >
+                            Edit
+                        </a>
                         <button
                             class="btn btn-sm btn-ghost"
                             onclick="pullDownListing(${sub.listing.listingID})"
@@ -179,9 +209,16 @@ function renderListings(submissions) {
                             Pull Down
                         </button>
                     </div>
-                </div>
-            `).join('')}
+                </div>`;
+            }).join('')}
         </div>`;
+}
+
+// Owner-typed text (descriptions, contact details) must not be rendered as HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 // LOAD AND SHOW NOTIFICATIONS

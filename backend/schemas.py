@@ -75,16 +75,29 @@ class PredictionResponse(BaseModel):
 
 # LISTING SCHEMA
 class ListingResponse(BaseModel):
-    listingID:     int
-    listingType:   str
-    askingPrice:   float
-    contactMethod: str
-    contactValue:  str
-    status:        str
-    createdAt:     datetime
+    listingID:         int
+    listingType:       str
+    askingSalePrice:   Optional[float]
+    askingRentalPrice: Optional[float]
+    description:       str
+    contactMethod:     str
+    contactValue:      str
+    status:            str
+    createdAt:         datetime
 
     class Config:
         from_attributes = True
+
+class ListingUpdate(BaseModel):
+    listingType:       str              # sale | rent | both
+    askingSalePrice:   Optional[float] = None
+    askingRentalPrice: Optional[float] = None
+    description:       str
+    contactMethod:     str              # phone | whatsapp | email
+    contactValue:      str
+
+class ListingCreate(ListingUpdate):
+    submissionID:      int
 
 # SUBMISSION SCHEMA
 class SubmissionResponse(BaseModel):
