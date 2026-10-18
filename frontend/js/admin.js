@@ -114,27 +114,30 @@ function renderPendingTable(submissions) {
     let rows = '';
 
     pending.forEach(sub => {
-        const date = new Date(sub.submittedAt)
-            .toLocaleDateString('en-KE');
-        const desc = sub.description.length > 60
-            ? sub.description.substring(0, 60) + '...'
-            : sub.description;
-        const location = sub.location
-            ? sub.location.cityOrCounty : '—';
-        const client = sub.client
-            ? sub.client.name : '—';
+        const date      = new Date(sub.submittedAt)
+                            .toLocaleDateString('en-KE');
+        const location  = sub.location
+                            ? sub.location.cityOrCounty : '—';
+        const client    = sub.client
+                            ? sub.client.name : '—';
         const imageCount = sub.images
-            ? sub.images.length : 0;
+                            ? sub.images.length : 0;
+
+        // Build property summary from structured fields
+        const propSummary = sub.propertyType + ' · '
+            + sub.bedrooms + ' bed · '
+            + sub.bathrooms + ' bath · '
+            + sub.sizeSqm + ' sqm';
 
         rows += '<tr>';
         rows += '<td style="color:#9CA3AF;font-size:13px">#'
             + sub.submissionID + '</td>';
         rows += '<td style="font-weight:600">'
             + client + '</td>';
-        rows += '<td style="max-width:220px;white-space:nowrap;'
+        rows += '<td style="max-width:240px;white-space:nowrap;'
             + 'overflow:hidden;text-overflow:ellipsis;'
             + 'color:#6B7280;font-size:13px">'
-            + desc + '</td>';
+            + propSummary + '</td>';
         rows += '<td style="font-size:13px">'
             + location + '</td>';
         rows += '<td style="font-size:13px;color:#6B7280">'
@@ -191,98 +194,151 @@ if (reviewContent) {
             if (sub.hasBorehole) amenities.push('Borehole');
 
             document.getElementById('reviewDescription').innerHTML = `
-                <div style="display:flex;flex-direction:column;gap:10px">
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-                        <div>
-                            <div style="font-size:12px;color:#6B7280;
-                                        font-weight:600;margin-bottom:3px">
-                                PROPERTY TYPE
-                            </div>
-                            <div style="font-size:15px;font-weight:600">
-                                ${sub.propertyType}
-                            </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;
+                            gap:14px 24px;white-space:normal;
+                            line-height:1.4;">
+                    <div>
+                        <div style="font-size:11px;color:#6B7280;
+                                    font-weight:700;letter-spacing:0.5px;
+                                    text-transform:uppercase;
+                                    margin-bottom:4px;">
+                            Property Type
                         </div>
-                        <div>
-                            <div style="font-size:12px;color:#6B7280;
-                                        font-weight:600;margin-bottom:3px">
-                                LOCATION
-                            </div>
-                            <div style="font-size:15px;font-weight:600">
-                                ${sub.location ? sub.location.cityOrCounty : '—'}
-                            </div>
+                        <div style="font-size:14px;font-weight:600;
+                                    color:#1C1C1C;">
+                            ${sub.propertyType}
                         </div>
-                        <div>
-                            <div style="font-size:12px;color:#6B7280;
-                                        font-weight:600;margin-bottom:3px">
-                                BEDROOMS
-                            </div>
-                            <div style="font-size:15px;font-weight:600">
-                                ${sub.bedrooms}
-                            </div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:#6B7280;
+                                    font-weight:700;letter-spacing:0.5px;
+                                    text-transform:uppercase;
+                                    margin-bottom:4px;">
+                            Location
                         </div>
-                        <div>
-                            <div style="font-size:12px;color:#6B7280;
-                                        font-weight:600;margin-bottom:3px">
-                                BATHROOMS
-                            </div>
-                            <div style="font-size:15px;font-weight:600">
-                                ${sub.bathrooms}
-                            </div>
+                        <div style="font-size:14px;font-weight:600;
+                                    color:#1C1C1C;">
+                            ${sub.location ? sub.location.cityOrCounty : '—'}
                         </div>
-                        <div>
-                            <div style="font-size:12px;color:#6B7280;
-                                        font-weight:600;margin-bottom:3px">
-                                SIZE
-                            </div>
-                            <div style="font-size:15px;font-weight:600">
-                                ${sub.sizeSqm} sqm
-                            </div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:#6B7280;
+                                    font-weight:700;letter-spacing:0.5px;
+                                    text-transform:uppercase;
+                                    margin-bottom:4px;">
+                            Bedrooms
                         </div>
-                        <div>
-                            <div style="font-size:12px;color:#6B7280;
-                                        font-weight:600;margin-bottom:3px">
-                                AMENITIES
-                            </div>
-                            <div style="font-size:14px;font-weight:500">
-                                ${amenities.length > 0
-                                    ? amenities.join(', ')
-                                    : 'None selected'}
-                            </div>
+                        <div style="font-size:14px;font-weight:600;
+                                    color:#1C1C1C;">
+                            ${sub.bedrooms}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:#6B7280;
+                                    font-weight:700;letter-spacing:0.5px;
+                                    text-transform:uppercase;
+                                    margin-bottom:4px;">
+                            Bathrooms
+                        </div>
+                        <div style="font-size:14px;font-weight:600;
+                                    color:#1C1C1C;">
+                            ${sub.bathrooms}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:#6B7280;
+                                    font-weight:700;letter-spacing:0.5px;
+                                    text-transform:uppercase;
+                                    margin-bottom:4px;">
+                            Size
+                        </div>
+                        <div style="font-size:14px;font-weight:600;
+                                    color:#1C1C1C;">
+                            ${sub.sizeSqm} sqm
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:#6B7280;
+                                    font-weight:700;letter-spacing:0.5px;
+                                    text-transform:uppercase;
+                                    margin-bottom:4px;">
+                            Amenities
+                        </div>
+                        <div style="font-size:14px;font-weight:600;
+                                    color:#1C1C1C;">
+                            ${amenities.length > 0
+                                ? amenities.join(', ')
+                                : 'None'}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:#6B7280;
+                                    font-weight:700;letter-spacing:0.5px;
+                                    text-transform:uppercase;
+                                    margin-bottom:4px;">
+                            Owner
+                        </div>
+                        <div style="font-size:14px;font-weight:600;
+                                    color:#1C1C1C;">
+                            ${sub.client ? sub.client.name : '—'}
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:#6B7280;
+                                    font-weight:700;letter-spacing:0.5px;
+                                    text-transform:uppercase;
+                                    margin-bottom:4px;">
+                            Submitted
+                        </div>
+                        <div style="font-size:14px;font-weight:600;
+                                    color:#1C1C1C;">
+                            ${new Date(sub.submittedAt).toLocaleString('en-KE')}
+                        </div>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <div style="font-size:11px;color:#6B7280;
+                                    font-weight:700;letter-spacing:0.5px;
+                                    text-transform:uppercase;
+                                    margin-bottom:4px;">
+                            Images
+                        </div>
+                        <div style="font-size:14px;font-weight:600;
+                                    color:#1C1C1C;">
+                            ${sub.images ? sub.images.length : 0} image(s) uploaded
                         </div>
                     </div>
                 </div>
-            `;
-
-            document.getElementById('reviewOwner').textContent =
-                sub.client ? sub.client.name : '—';
-            document.getElementById('reviewDate').textContent =
-                new Date(sub.submittedAt).toLocaleString('en-KE');
-            document.getElementById('reviewImageCount').textContent =
-                `${sub.images ? sub.images.length : 0} image(s)`;
+            `.trim();
 
             // Populate image gallery
             const gallery = document.getElementById('imageGallery');
             if (gallery) {
                 if (!sub.images || sub.images.length === 0) {
                     gallery.innerHTML = `
-                        <div class="gallery-item no-image">
+                        <div class="gallery-item no-image"
+                            style="display:flex;align-items:center;
+                                    justify-content:center;
+                                    color:#9CA3AF;font-size:13px;
+                                    padding:24px;">
                             No images uploaded
                         </div>`;
                 } else {
-                    gallery.innerHTML = sub.images.map(img => `
-                        <div class="gallery-item">
-                            <img
-                                src="http://127.0.0.1:8000/uploads/${
-                                    img.filePath.replace(
-                                        'uploads/submissions/', ''
-                                    )
-                                }"
-                                alt="Property image"
-                                onerror="this.parentElement.innerHTML=
-                                    '<div class=\'no-image\'>Image unavailable</div>'"
-                            >
-                        </div>
-                    `).join('');
+                    let galleryHTML = '';
+                    sub.images.forEach(function(img) {
+                        // Normalise the file path to always use forward slashes
+                        const cleanPath = img.filePath.replace(/\\/g, '/');
+                        const imageUrl  = 'http://127.0.0.1:8000/' + cleanPath;
+                        galleryHTML += '<div class="gallery-item">'
+                            + '<img src="' + imageUrl + '" '
+                            + 'alt="Property image" '
+                            + 'style="width:100%;height:100%;object-fit:cover;" '
+                            + 'onerror="this.parentElement.innerHTML='
+                            + '\'<div style=\\\'display:flex;align-items:center;'
+                            + 'justify-content:center;height:100%;color:#9CA3AF;'
+                            + 'font-size:12px;\\\'>Image unavailable</div>\'">'
+                            + '</div>';
+                    });
+                    gallery.innerHTML = galleryHTML;
                 }
             }
 
@@ -304,6 +360,7 @@ if (reviewContent) {
                 document.getElementById('check1'),
                 document.getElementById('check2'),
                 document.getElementById('check3'),
+                document.getElementById('check4'),
             ];
 
             const allChecked = checks.every(c => c && c.checked);
